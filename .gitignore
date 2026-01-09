@@ -1,0 +1,77 @@
+# Laravel
+/vendor/
+/node_modules/
+/public/build/
+/public/hot
+/public/storage
+/storage/*.key
+/storage/app/documents/
+/storage/framework/cache/data/
+/storage/framework/sessions/
+/storage/framework/views/
+/storage/logs/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# PHPUnit
+.phpunit.result.cache
+phpunit.xml
+
+# Composer
+composer.phar
+
+# NPM
+npm-debug.log
+yarn-error.log
+
+# Database
+*.sqlite
+*.sqlite-journal
+database/database.sqlite
+
+# Logs
+*.log
+logs/
+
+# Cache
+*.cache
+.php-cs-fixer.cache
+
+# Test coverage
+coverage/
+.phpunit.cache/
+
+# Laravel Telescope
+/public/vendor/telescope/
+
+# Laravel Mix
+/public/css/
+/public/js/
+/public/mix-manifest.json
+
+# Homestead/Vagrant
+.vagrant/
+Homestead.json
+Homestead.yaml
+
+# Laravel Sail
+docker-compose.override.yml
+.sail/
+
+# SSL certificates
+*.pem
+*.key
+*.crt
