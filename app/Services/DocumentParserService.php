@@ -6,14 +6,17 @@ use App\Models\Document;
 use Illuminate\Support\Facades\Storage;
 use Smalot\PdfParser\Parser as PdfParser;
 use PhpOffice\PhpWord\IOFactory as WordFactory;
+use OpenAI\Laravel\Facades\OpenAI;
 
 class DocumentParserService
 {
     private PdfParser $pdfParser;
+    private bool $ocrEnabled;
 
     public function __construct()
     {
         $this->pdfParser = new PdfParser();
+        $this->ocrEnabled = !empty(config('openai.api_key'));
     }
 
     /**
@@ -48,12 +51,60 @@ class DocumentParserService
             // Clean up the text
             $text = $this->cleanText($text);
 
+            // If PDF has very little text, it might be a scanned document
+            // Try OCR if enabled and text is too short
+            if (strlen($text) < 100 && $this->ocrEnabled) {
+                \Log::info('PDF appears to be scanned, attempting OCR...');
+                
+                try {
+                    // Convert first page of PDF to image for OCR
+                    $ocrResult = $this->ocrPdfWithVision($filePath);
+                    if (!empty($ocrResult['text']) && strlen($ocrResult['text']) > strlen($text)) {
+                        return [
+                            'text' => $ocrResult['text'],
+                            'page_count' => max(1, $pageCount),
+                        ];
+                    }
+                } catch (\Exception $e) {
+                    \Log::warning('PDF OCR failed, using extracted text: ' . $e->getMessage());
+                }
+            }
+
             return [
                 'text' => $text,
                 'page_count' => max(1, $pageCount),
             ];
         } catch (\Exception $e) {
             throw new \Exception('Failed to parse PDF: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * OCR a PDF using Vision (converts to image first)
+     */
+    private function ocrPdfWithVision(string $filePath): array
+    {
+        // Check if Imagick is available for PDF to image conversion
+        if (!extension_loaded('imagick')) {
+            throw new \Exception('Imagick extension required for PDF OCR');
+        }
+
+        try {
+            $imagick = new \Imagick();
+            $imagick->setResolution(300, 300);
+            $imagick->readImage($filePath . '[0]'); // First page only
+            $imagick->setImageFormat('png');
+            
+            $tempFile = sys_get_temp_dir() . '/' . uniqid('pdf_ocr_') . '.png';
+            $imagick->writeImage($tempFile);
+            $imagick->destroy();
+            
+            $result = $this->parseImageWithVision($tempFile);
+            @unlink($tempFile);
+            
+            return $result;
+        } catch (\Exception $e) {
+            throw new \Exception('PDF to image conversion failed: ' . $e->getMessage());
         }
     }
 
@@ -89,14 +140,21 @@ class DocumentParserService
     }
 
     /**
-     * Parse image document (OCR would be implemented here)
+     * Parse image document using OpenAI GPT-4 Vision for OCR
      */
     private function parseImage(string $filePath): array
     {
-        // For now, return a placeholder
-        // In production, you would integrate OCR (e.g., Google Vision, AWS Textract)
-        
-        // Check if tesseract is available
+        // Use OpenAI GPT-4 Vision for OCR
+        if ($this->ocrEnabled) {
+            try {
+                return $this->parseImageWithVision($filePath);
+            } catch (\Exception $e) {
+                \Log::error('Vision OCR failed: ' . $e->getMessage());
+                // Fall through to tesseract or placeholder
+            }
+        }
+
+        // Fallback: Check if tesseract is available
         $tesseractPath = trim(shell_exec('which tesseract') ?? '');
         
         if (!empty($tesseractPath)) {
@@ -119,6 +177,65 @@ class DocumentParserService
 
         return [
             'text' => '[Image document - OCR processing required. Please upgrade to Pro+ for OCR support.]',
+            'page_count' => 1,
+        ];
+    }
+
+    /**
+     * Parse image using OpenAI GPT-4 Vision
+     */
+    private function parseImageWithVision(string $filePath): array
+    {
+        // Read and encode image as base64
+        $imageData = file_get_contents($filePath);
+        $base64Image = base64_encode($imageData);
+        
+        // Detect mime type
+        $finfo = new \finfo(FILEINFO_MIME_TYPE);
+        $mimeType = $finfo->file($filePath);
+        
+        // Validate mime type
+        $allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        if (!in_array($mimeType, $allowedMimes)) {
+            throw new \Exception('Unsupported image format for OCR');
+        }
+
+        $response = OpenAI::chat()->create([
+            'model' => 'gpt-4o',
+            'messages' => [
+                [
+                    'role' => 'system',
+                    'content' => 'You are an expert OCR system. Extract all text from the provided image. Maintain the original structure, formatting, and layout as much as possible. If the image contains tables, preserve the table structure. If there are multiple columns, process them in reading order. Output only the extracted text, nothing else.',
+                ],
+                [
+                    'role' => 'user',
+                    'content' => [
+                        [
+                            'type' => 'text',
+                            'text' => 'Please extract all text from this image. Maintain the original structure and formatting. Output only the extracted text.',
+                        ],
+                        [
+                            'type' => 'image_url',
+                            'image_url' => [
+                                'url' => "data:{$mimeType};base64,{$base64Image}",
+                                'detail' => 'high',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'max_tokens' => 4096,
+            'temperature' => 0.1,
+        ]);
+
+        $text = $response->choices[0]->message->content ?? '';
+        
+        if (empty(trim($text))) {
+            throw new \Exception('No text could be extracted from the image');
+        }
+
+        return [
+            'text' => $this->cleanText($text),
             'page_count' => 1,
         ];
     }
