@@ -19,6 +19,9 @@ class User extends Authenticatable
         'password',
         'apple_id',
         'avatar_url',
+        'notifications_enabled',
+        'dark_mode_enabled',
+        'language',
     ];
 
     protected $hidden = [
@@ -31,6 +34,8 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'notifications_enabled' => 'boolean',
+            'dark_mode_enabled' => 'boolean',
         ];
     }
 

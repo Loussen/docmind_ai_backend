@@ -20,9 +20,43 @@ class DocumentController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        $documents = $request->user()
+        $query = $request->user()
             ->documents()
-            ->with('summary:id,document_id,title')
+            ->with('summary:id,document_id,title');
+
+        // Filter by type
+        $type = $request->get('type');
+        if ($type && $type !== 'all') {
+            if ($type === 'image') {
+                $query->whereIn('type', ['image', 'jpg', 'jpeg', 'png']);
+            } else {
+                $query->where('type', $type);
+            }
+        }
+
+        // Filter by status
+        $status = $request->get('status');
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        // Search by name
+        $search = $request->get('search');
+        if ($search) {
+            $query->where('original_name', 'like', "%{$search}%");
+        }
+
+        // Date filter
+        $dateFrom = $request->get('date_from');
+        $dateTo = $request->get('date_to');
+        if ($dateFrom) {
+            $query->whereDate('created_at', '>=', $dateFrom);
+        }
+        if ($dateTo) {
+            $query->whereDate('created_at', '<=', $dateTo);
+        }
+
+        $documents = $query
             ->orderByDesc('created_at')
             ->paginate($request->get('per_page', 20));
 

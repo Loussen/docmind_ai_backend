@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DocumentController;
 use App\Http\Controllers\Api\SummaryController;
 use App\Http\Controllers\Api\SubscriptionController;
+use App\Http\Controllers\Api\SettingsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -40,6 +41,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // User
     Route::prefix('user')->group(function () {
         Route::get('/usage', [SubscriptionController::class, 'usage']);
+        Route::get('/settings', [SettingsController::class, 'show']);
+        Route::put('/settings', [SettingsController::class, 'update']);
     });
 
     // Documents
