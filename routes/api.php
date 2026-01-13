@@ -38,6 +38,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
     });
 
+    // User Profile
+    Route::prefix('user')->group(function () {
+        Route::put('/profile', [AuthController::class, 'updateProfile']);
+    });
+
     // User
     Route::prefix('user')->group(function () {
         Route::get('/usage', [SubscriptionController::class, 'usage']);
