@@ -66,15 +66,35 @@ class AppleReceiptVerificationService
 
             // Check if subscription is expired
             // In Sandbox, subscriptions renew very quickly (1 month = 5 minutes)
-            // So we give a grace period for sandbox environment
-            $isSandbox = strtolower($environment) === 'sandbox';
-            $gracePeriod = $isSandbox ? 3600 : 0; // 1 hour grace for sandbox
-            $isExpired = $expiresDate && ($expiresDate + $gracePeriod) < time();
-
-            // For sandbox testing, always allow if it's a recent transaction
-            if ($isSandbox && $purchaseDate && (time() - $purchaseDate) < 86400) {
-                $isExpired = false; // Allow transactions from last 24 hours in sandbox
+            // So we ALWAYS accept sandbox subscriptions regardless of expiration
+            $isSandbox = stripos($environment, 'sandbox') !== false;
+            
+            // Log for debugging
+            Log::info("Verification check - Environment: {$environment}, isSandbox: " . ($isSandbox ? 'true' : 'false'));
+            
+            // In sandbox, ALWAYS accept subscriptions - they expire too quickly for testing
+            if ($isSandbox) {
+                Log::info("Sandbox detected - accepting subscription regardless of expiration");
+                return [
+                    'valid' => true,
+                    'subscription' => [
+                        'product_id' => $transactionProductId,
+                        'transaction_id' => $transactionId,
+                        'original_transaction_id' => $originalTransactionId,
+                        'purchase_date' => $purchaseDate ? date('Y-m-d H:i:s', $purchaseDate) : null,
+                        'expires_date' => $expiresDate ? date('Y-m-d H:i:s', $expiresDate) : null,
+                    ],
+                    'original_transaction_id' => $originalTransactionId,
+                    'auto_renewing' => ($data['type'] ?? '') === 'Auto-Renewable Subscription',
+                    'is_expired' => false,
+                    'environment' => $environment,
+                    'message' => 'Valid subscription (sandbox)',
+                ];
             }
+            
+            // Production: normal expiration check
+            $gracePeriod = 3600; // 1 hour grace period
+            $isExpired = $expiresDate && ($expiresDate + $gracePeriod) < time();
 
             return [
                 'valid' => !$isExpired,

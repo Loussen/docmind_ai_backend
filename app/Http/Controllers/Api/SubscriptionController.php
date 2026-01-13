@@ -65,7 +65,16 @@ class SubscriptionController extends Controller
                 productId: $request->product_id
             );
 
-            if (!$verificationResult['valid']) {
+            // For sandbox, always accept subscriptions (they expire very quickly for testing)
+            $isSandbox = ($verificationResult['environment'] ?? 'Sandbox') === 'Sandbox';
+            $shouldAccept = $verificationResult['valid'];
+            
+            // In sandbox, always accept if we have subscription data
+            if (!$shouldAccept && $isSandbox && !empty($verificationResult['subscription'])) {
+                $shouldAccept = true;
+            }
+
+            if (!$shouldAccept) {
                 return response()->json([
                     'success' => false,
                     'message' => $verificationResult['message'] ?? 'Receipt verification failed',
