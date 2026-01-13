@@ -49,7 +49,7 @@
             </ul>
             
             <div class="nav-cta">
-                <a href="#download" class="btn btn-primary">Download App</a>
+                <a href="https://apps.apple.com/app/id6757693350" class="btn btn-primary" target="_blank" rel="noopener">Download App</a>
             </div>
         </div>
     </nav>
