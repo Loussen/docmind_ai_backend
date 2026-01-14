@@ -41,6 +41,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // User Profile
     Route::prefix('user')->group(function () {
         Route::put('/profile', [AuthController::class, 'updateProfile']);
+        Route::delete('/account', [AuthController::class, 'deleteAccount']);
     });
 
     // User

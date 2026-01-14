@@ -159,6 +159,39 @@ class AuthController extends Controller
         ]);
     }
 
+    public function deleteAccount(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        
+        // Delete all user tokens
+        $user->tokens()->delete();
+        
+        // Delete all user's summaries
+        $user->documents()->each(function ($document) {
+            if ($document->summary) {
+                $document->summary->delete();
+            }
+        });
+        
+        // Delete all user's documents
+        $user->documents()->delete();
+        
+        // Delete user's subscription
+        if ($user->subscription) {
+            $user->subscription->delete();
+        }
+        
+        // Delete user's usage logs
+        $user->usageLogs()->delete();
+        
+        // Finally, delete the user
+        $user->delete();
+
+        return response()->json([
+            'message' => 'Account deleted successfully',
+        ]);
+    }
+
     private function formatUser(User $user): array
     {
         $user->load('subscription');
