@@ -36,53 +36,62 @@
         
         <div class="hero-visual">
             <div class="phone-mockup">
-                <div class="phone-screen summary-screen">
-                    <!-- Summary Header -->
-                    <div class="summary-header">
-                        <div class="summary-nav">
-                            <span class="back-icon">←</span>
-                            <span class="share-icon">↗</span>
-                        </div>
-                        <div class="doc-badge">
-                            <span class="doc-type">PDF</span>
-                            <span class="doc-name">Annual Report 2024.pdf</span>
+                <div class="phone-screen">
+                    <!-- Status Bar -->
+                    <div class="status-bar">
+                        <span>9:41</span>
+                        <div class="status-icons">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C7.46 3 3.34 4.78.29 7.67c-.18.18-.29.43-.29.71 0 .28.11.53.29.71l11 11c.18.18.43.29.71.29s.53-.11.71-.29l11-11c.18-.18.29-.43.29-.71 0-.28-.11-.53-.29-.71C20.66 4.78 16.54 3 12 3z"/></svg>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
                         </div>
                     </div>
                     
+                    <!-- App Header -->
+                    <div class="app-header">
+                        <div class="header-back">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        </div>
+                        <div class="header-title">Summary</div>
+                        <div class="header-share">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                        </div>
+                    </div>
+                    
+                    <!-- Document Info -->
+                    <div class="doc-info-bar">
+                        <div class="doc-icon-small">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/></svg>
+                        </div>
+                        <span class="doc-title">Annual Report 2024.pdf</span>
+                    </div>
+                    
                     <!-- Summary Content -->
-                    <div class="summary-content">
-                        <!-- Overview Section -->
-                        <div class="summary-section">
-                            <div class="section-title">
-                                <span class="section-icon overview-icon">📋</span>
-                                <h5>Overview</h5>
+                    <div class="mock-content">
+                        <!-- Overview Card -->
+                        <div class="summary-card">
+                            <div class="card-header purple">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+                                <span>Overview</span>
                             </div>
-                            <p class="summary-text">This comprehensive report analyzes the company's financial performance, market position, and strategic initiatives throughout 2024...</p>
+                            <p class="card-text">This report analyzes the company's financial performance and strategic initiatives for 2024.</p>
                         </div>
                         
-                        <!-- Key Points Section -->
-                        <div class="summary-section">
-                            <div class="section-title">
-                                <span class="section-icon keypoints-icon">🎯</span>
-                                <h5>Key Points</h5>
+                        <!-- Key Points Card -->
+                        <div class="summary-card">
+                            <div class="card-header green">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+                                <span>Key Points</span>
                             </div>
-                            <div class="key-point">
-                                <span class="bullet">•</span>
-                                <span>Revenue increased by 24% YoY</span>
-                            </div>
-                            <div class="key-point">
-                                <span class="bullet">•</span>
-                                <span>Expanded to 12 new markets</span>
-                            </div>
-                            <div class="key-point">
-                                <span class="bullet">•</span>
-                                <span>Customer base grew to 2.5M</span>
+                            <div class="key-points-list">
+                                <div class="kp-item"><span class="kp-dot"></span>Revenue grew 24% YoY</div>
+                                <div class="kp-item"><span class="kp-dot"></span>Expanded to 12 markets</div>
+                                <div class="kp-item"><span class="kp-dot"></span>2.5M active customers</div>
                             </div>
                         </div>
                         
-                        <!-- AI Badge -->
-                        <div class="ai-badge">
-                            <span class="ai-icon">✨</span>
+                        <!-- AI Generated Badge -->
+                        <div class="ai-generated">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2z"/></svg>
                             <span>Generated by AI</span>
                         </div>
                     </div>
