@@ -15,8 +15,9 @@ use Illuminate\Support\Str;
 
 class GuestController extends Controller
 {
-    private const MAX_GUEST_SUMMARIES = 2;
-    private const RATE_LIMIT_MINUTES = 1440; // 24 hours
+    private const MAX_GUEST_SUMMARIES = 2;        // Total lifetime trials (not daily)
+    private const MAX_GUEST_PAGES = 2;            // Max pages per document for guests
+    private const RATE_LIMIT_MINUTES = 525600;    // 1 year (essentially permanent)
 
     public function __construct(
         private DocumentParserService $documentParser,
@@ -101,14 +102,14 @@ class GuestController extends Controller
             $extractedText = $parseResult['text'];
             $pageCount = $parseResult['page_count'];
 
-            // Check page limit for guests (max 5 pages)
-            if ($pageCount > 5) {
+            // Check page limit for guests (max 2 pages)
+            if ($pageCount > self::MAX_GUEST_PAGES) {
                 Storage::disk('local')->delete($filePath);
                 return response()->json([
                     'error' => 'Page limit exceeded',
-                    'message' => 'Guest users can summarize documents up to 5 pages. Create an account for unlimited pages.',
+                    'message' => 'Guest mode supports up to ' . self::MAX_GUEST_PAGES . ' pages. Create a free account for longer documents!',
                     'page_count' => $pageCount,
-                    'limit' => 5,
+                    'limit' => self::MAX_GUEST_PAGES,
                 ], 403);
             }
 
@@ -137,6 +138,8 @@ class GuestController extends Controller
             // Clean up temporary file
             Storage::disk('local')->delete($filePath);
 
+            $remaining = self::MAX_GUEST_SUMMARIES - $newUsageCount;
+            
             return response()->json([
                 'success' => true,
                 'document' => [
@@ -155,12 +158,16 @@ class GuestController extends Controller
                 'usage' => [
                     'used' => $newUsageCount,
                     'limit' => self::MAX_GUEST_SUMMARIES,
-                    'remaining' => self::MAX_GUEST_SUMMARIES - $newUsageCount,
+                    'remaining' => $remaining,
                 ],
-                'message' => 'Summary generated successfully! ' . 
-                    ($newUsageCount >= self::MAX_GUEST_SUMMARIES 
-                        ? 'This was your last free trial. Create an account to continue.'
-                        : 'You have ' . (self::MAX_GUEST_SUMMARIES - $newUsageCount) . ' free trial(s) remaining.'),
+                'limitations' => [
+                    'max_pages' => self::MAX_GUEST_PAGES,
+                    'history_saved' => false,
+                    'cloud_sync' => false,
+                ],
+                'message' => $remaining <= 0
+                    ? 'This was your last free trial. Create an account to save history and continue!'
+                    : "Summary ready! Note: This won't be saved. Create a free account to keep your summaries.",
             ]);
 
         } catch (\Exception $e) {
