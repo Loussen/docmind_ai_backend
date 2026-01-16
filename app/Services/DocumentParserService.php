@@ -39,6 +39,23 @@ class DocumentParserService
     }
 
     /**
+     * Parse a file directly (for guest usage without Document model)
+     */
+    public function parseFile(string $filePath, string $type, ?string $mimeType = null): array
+    {
+        if (!file_exists($filePath)) {
+            throw new \Exception('File not found');
+        }
+
+        return match ($type) {
+            'pdf' => $this->parsePdf($filePath),
+            'docx', 'doc' => $this->parseWord($filePath, $type),
+            'image' => $this->parseImage($filePath),
+            default => throw new \Exception('Unsupported document type'),
+        };
+    }
+
+    /**
      * Parse PDF document
      */
     private function parsePdf(string $filePath): array

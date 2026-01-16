@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\DocumentController;
 use App\Http\Controllers\Api\SummaryController;
 use App\Http\Controllers\Api\SubscriptionController;
 use App\Http\Controllers\Api\SettingsController;
+use App\Http\Controllers\Api\GuestController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,6 +21,12 @@ Route::get('/health', function () {
         'timestamp' => now()->toISOString(),
         'version' => '1.0.0',
     ]);
+});
+
+// Guest Routes (No authentication required)
+Route::prefix('guest')->group(function () {
+    Route::post('/summarize', [GuestController::class, 'summarize']);
+    Route::post('/check-usage', [GuestController::class, 'checkUsage']);
 });
 
 // Authentication Routes (Public)
