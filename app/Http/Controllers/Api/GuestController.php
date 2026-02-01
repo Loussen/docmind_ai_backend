@@ -140,6 +140,15 @@ class GuestController extends Controller
 
             $remaining = self::MAX_GUEST_SUMMARIES - $newUsageCount;
             
+            // For guest users, only send partial summary (overview + first 2 key points)
+            // Full summary requires account creation
+            $allKeyPoints = $formattedSummary['key_points'] ?? [];
+            $allActionItems = $formattedSummary['action_items'] ?? [];
+            $allKeywords = $formattedSummary['keywords'] ?? [];
+            
+            // Only show first 2 key points to guest users
+            $visibleKeyPoints = array_slice($allKeyPoints, 0, 2);
+            
             return response()->json([
                 'success' => true,
                 'document' => [
@@ -151,9 +160,18 @@ class GuestController extends Controller
                 'summary' => [
                     'title' => $formattedSummary['title'],
                     'overview' => $formattedSummary['overview'],
-                    'key_points' => $formattedSummary['key_points'] ?? [],
-                    'action_items' => $formattedSummary['action_items'] ?? [],
-                    'keywords' => $formattedSummary['keywords'] ?? [],
+                    'key_points' => $visibleKeyPoints,  // Only first 2 key points
+                    'action_items' => [],                // Hidden for guests
+                    'keywords' => [],                    // Hidden for guests
+                ],
+                'preview_info' => [
+                    'is_preview' => true,
+                    'hidden_key_points' => max(0, count($allKeyPoints) - 2),
+                    'hidden_action_items' => count($allActionItems),
+                    'hidden_keywords' => count($allKeywords),
+                    'total_key_points' => count($allKeyPoints),
+                    'total_action_items' => count($allActionItems),
+                    'total_keywords' => count($allKeywords),
                 ],
                 'usage' => [
                     'used' => $newUsageCount,
