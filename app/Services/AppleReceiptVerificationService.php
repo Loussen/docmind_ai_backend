@@ -64,17 +64,26 @@ class AppleReceiptVerificationService
                 // Allow it anyway - the transaction is valid
             }
 
-            // Check if subscription is expired
-            // In Sandbox, subscriptions renew very quickly (1 month = 5 minutes)
-            // So we ALWAYS accept sandbox subscriptions regardless of expiration
-            $isSandbox = stripos($environment, 'sandbox') !== false;
+            // Check environment matches our configuration
+            $isReceiptSandbox = stripos($environment, 'sandbox') !== false;
+            $isServerSandbox = config('docmind.apple.sandbox', false);
             
-            // Log for debugging
-            Log::info("Verification check - Environment: {$environment}, isSandbox: " . ($isSandbox ? 'true' : 'false'));
+            Log::info("Verification check - Receipt Environment: {$environment}, Server Sandbox Mode: " . ($isServerSandbox ? 'true' : 'false'));
             
-            // In sandbox, ALWAYS accept subscriptions - they expire too quickly for testing
-            if ($isSandbox) {
-                Log::info("Sandbox detected - accepting subscription regardless of expiration");
+            // IMPORTANT: In production mode, reject sandbox receipts
+            // This prevents old test purchases from being accepted in production
+            if (!$isServerSandbox && $isReceiptSandbox) {
+                Log::warning("Rejecting sandbox receipt in production mode");
+                return [
+                    'valid' => false,
+                    'message' => 'Sandbox purchases are not valid in production. Please make a real purchase.',
+                    'environment' => $environment,
+                ];
+            }
+            
+            // In sandbox mode, accept sandbox receipts with relaxed expiration
+            if ($isServerSandbox && $isReceiptSandbox) {
+                Log::info("Sandbox mode - accepting subscription with relaxed validation");
                 return [
                     'valid' => true,
                     'subscription' => [
@@ -92,8 +101,8 @@ class AppleReceiptVerificationService
                 ];
             }
             
-            // Production: normal expiration check
-            $gracePeriod = 3600; // 1 hour grace period
+            // Production: normal expiration check with grace period
+            $gracePeriod = 86400; // 24 hour grace period for renewal delays
             $isExpired = $expiresDate && ($expiresDate + $gracePeriod) < time();
 
             return [

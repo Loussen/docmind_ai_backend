@@ -92,11 +92,13 @@ return [
     |--------------------------------------------------------------------------
     | Apple In-App Purchase
     |--------------------------------------------------------------------------
+    | IMPORTANT: Set APPLE_SANDBOX=false in production .env file
+    | This ensures production builds only accept real purchases
     */
     
     'apple' => [
         'shared_secret' => env('APPLE_SHARED_SECRET'),
-        'sandbox' => env('APPLE_SANDBOX', true),
+        'sandbox' => env('APPLE_SANDBOX', false), // Default to production mode
         'verify_url_sandbox' => 'https://sandbox.itunes.apple.com/verifyReceipt',
         'verify_url_production' => 'https://buy.itunes.apple.com/verifyReceipt',
     ],

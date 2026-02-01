@@ -60,61 +60,67 @@ class SubscriptionController extends Controller
         $user = $request->user();
         
         try {
+            \Log::info('Purchase verification started', [
+                'user_id' => $user->id,
+                'product_id' => $request->product_id,
+                'transaction_id' => $request->transaction_id,
+            ]);
+            
             $verificationResult = $this->appleVerification->verify(
                 receiptData: $request->receipt_data,
                 productId: $request->product_id
             );
 
-            // For sandbox, always accept subscriptions (they expire very quickly for testing)
-            $isSandbox = ($verificationResult['environment'] ?? 'Sandbox') === 'Sandbox';
-            $shouldAccept = $verificationResult['valid'];
-            
-            // In sandbox, always accept if we have subscription data
-            if (!$shouldAccept && $isSandbox && !empty($verificationResult['subscription'])) {
-                $shouldAccept = true;
-            }
+            \Log::info('Verification result', $verificationResult);
 
-            if (!$shouldAccept) {
+            // Check if verification was successful
+            if (!$verificationResult['valid']) {
+                \Log::warning('Purchase verification failed', [
+                    'user_id' => $user->id,
+                    'message' => $verificationResult['message'] ?? 'Unknown error',
+                    'environment' => $verificationResult['environment'] ?? 'unknown',
+                ]);
+                
                 return response()->json([
                     'success' => false,
                     'message' => $verificationResult['message'] ?? 'Receipt verification failed',
                 ], 400);
             }
 
-            // Determine plan from product ID
-            $plan = $this->getPlanFromProductId($request->product_id);
+            // Determine plan from product ID (use receipt product ID if available)
+            $actualProductId = $verificationResult['subscription']['product_id'] ?? $request->product_id;
+            $plan = $this->getPlanFromProductId($actualProductId);
             
-            // Calculate end date based on product
-            $endDate = $this->calculateEndDate($request->product_id);
+            // Calculate end date - use from receipt if available, otherwise calculate
+            $receiptExpiresDate = $verificationResult['subscription']['expires_date'] ?? null;
+            if ($receiptExpiresDate) {
+                $endDate = new \DateTime($receiptExpiresDate);
+            } else {
+                $endDate = $this->calculateEndDate($actualProductId);
+            }
 
             // Create or update subscription
             $subscription = $user->subscription;
             
+            $subscriptionData = [
+                'plan' => $plan,
+                'status' => 'active',
+                'start_date' => now(),
+                'end_date' => $endDate,
+                'apple_transaction_id' => $request->transaction_id,
+                'apple_original_transaction_id' => $verificationResult['original_transaction_id'] ?? $request->transaction_id,
+                'apple_product_id' => $actualProductId,
+                'is_auto_renewing' => $verificationResult['auto_renewing'] ?? false,
+                'receipt_data' => ['receipt' => $request->receipt_data],
+            ];
+            
             if ($subscription) {
-                $subscription->update([
-                    'plan' => $plan,
-                    'status' => 'active',
-                    'start_date' => now(),
-                    'end_date' => $endDate,
-                    'apple_transaction_id' => $request->transaction_id,
-                    'apple_original_transaction_id' => $verificationResult['original_transaction_id'] ?? $request->transaction_id,
-                    'apple_product_id' => $request->product_id,
-                    'is_auto_renewing' => $verificationResult['auto_renewing'] ?? false,
-                    'receipt_data' => ['receipt' => $request->receipt_data],
-                ]);
+                $subscription->update($subscriptionData);
+                \Log::info('Subscription updated', ['subscription_id' => $subscription->id, 'plan' => $plan]);
             } else {
-                $subscription = Subscription::create([
-                    'user_id' => $user->id,
-                    'plan' => $plan,
-                    'status' => 'active',
-                    'start_date' => now(),
-                    'end_date' => $endDate,
-                    'apple_transaction_id' => $request->transaction_id,
-                    'apple_original_transaction_id' => $verificationResult['original_transaction_id'] ?? $request->transaction_id,
-                    'apple_product_id' => $request->product_id,
-                    'is_auto_renewing' => $verificationResult['auto_renewing'] ?? false,
-                    'receipt_data' => ['receipt' => $request->receipt_data],
-                ]);
+                $subscriptionData['user_id'] = $user->id;
+                $subscription = Subscription::create($subscriptionData);
+                \Log::info('Subscription created', ['subscription_id' => $subscription->id, 'plan' => $plan]);
             }
 
             return response()->json([
@@ -124,6 +130,12 @@ class SubscriptionController extends Controller
             ]);
 
         } catch (\Exception $e) {
+            \Log::error('Purchase verification error', [
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            
             return response()->json([
                 'success' => false,
                 'message' => 'Verification failed: ' . $e->getMessage(),
