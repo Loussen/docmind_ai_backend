@@ -1,7 +1,41 @@
 @extends('layouts.app')
 
-@section('title', 'Terms of Service - DocMind AI')
-@section('description', 'Terms of Service for DocMind AI - Read our terms and conditions for using our document summarization service.')
+@section('title', 'Terms of Service - DocMind AI | Usage Terms & Conditions')
+@section('description', 'Terms of Service for DocMind AI. Read our terms and conditions for using the AI-powered document summarization app. Subscription, refund, and usage policies.')
+@section('keywords', 'DocMind AI terms of service, app terms and conditions, subscription terms, AI app usage policy, document summarizer terms')
+
+@section('structured_data')
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Terms of Service - DocMind AI",
+    "description": "Terms of Service for DocMind AI document summarization app",
+    "url": "{{ url('/terms') }}",
+    "isPartOf": {
+        "@type": "WebSite",
+        "name": "DocMind AI",
+        "url": "{{ url('/') }}"
+    },
+    "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "{{ url('/') }}"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Terms of Service"
+            }
+        ]
+    }
+}
+</script>
+@endsection
 
 @section('content')
 <section class="legal-hero">

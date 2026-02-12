@@ -1,7 +1,41 @@
 @extends('layouts.app')
 
-@section('title', 'Privacy Policy - DocMind AI')
-@section('description', 'Privacy Policy for DocMind AI - Learn how we collect, use, and protect your personal information.')
+@section('title', 'Privacy Policy - DocMind AI | How We Protect Your Data')
+@section('description', 'DocMind AI Privacy Policy. Learn how we collect, use, and protect your personal information and documents. GDPR & CCPA compliant. Your data is encrypted and secure.')
+@section('keywords', 'DocMind AI privacy policy, data protection, document security, AI app privacy, GDPR, CCPA, data encryption')
+
+@section('structured_data')
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Privacy Policy - DocMind AI",
+    "description": "Privacy Policy for DocMind AI document summarization app",
+    "url": "{{ url('/privacy') }}",
+    "isPartOf": {
+        "@type": "WebSite",
+        "name": "DocMind AI",
+        "url": "{{ url('/') }}"
+    },
+    "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "{{ url('/') }}"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Privacy Policy"
+            }
+        ]
+    }
+}
+</script>
+@endsection
 
 @section('content')
 <section class="legal-hero">

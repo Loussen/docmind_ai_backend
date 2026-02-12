@@ -1,27 +1,100 @@
 @extends('layouts.app')
 
-@section('title', 'DocMind AI - AI-Powered Document Summarization')
-@section('description', 'Transform your documents into intelligent summaries with AI-powered analysis. Upload PDFs, DOCX files, and images for instant insights.')
+@section('title', 'DocMind AI - AI-Powered Document Summarization App for iPhone')
+@section('description', 'DocMind AI summarizes PDFs, Word docs & images in seconds using AI. Download free on the App Store. Try without an account. Smart OCR, key points & action items.')
+@section('keywords', 'AI document summarizer, PDF summary app, summarize PDF iPhone, document reader AI, OCR app iOS, AI notes app, DocMind AI, text extraction app, DOCX summarizer, AI document analysis, App Store')
+
+@section('structured_data')
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "DocMind AI",
+    "description": "AI-Powered Document Summarization App. Upload PDFs, Word documents, and images to get instant AI-generated summaries, key points, and action items.",
+    "applicationCategory": "ProductivityApplication",
+    "operatingSystem": "iOS",
+    "offers": [
+        {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD",
+            "description": "Free plan - 3 documents per day"
+        },
+        {
+            "@type": "Offer",
+            "price": "4.99",
+            "priceCurrency": "USD",
+            "description": "Pro plan - Unlimited documents",
+            "priceValidUntil": "{{ date('Y-12-31') }}"
+        }
+    ],
+    "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "50",
+        "bestRating": "5",
+        "worstRating": "1"
+    },
+    "downloadUrl": "https://apps.apple.com/app/id6757693350",
+    "softwareVersion": "1.0",
+    "screenshot": "{{ asset('assets/images/og-image.png') }}",
+    "author": {
+        "@type": "Organization",
+        "name": "DocMind AI",
+        "url": "{{ url('/') }}"
+    }
+}
+</script>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "DocMind AI",
+    "url": "{{ url('/') }}",
+    "description": "AI-Powered Document Summarization",
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "{{ url('/support') }}?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+    }
+}
+</script>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "DocMind AI",
+    "url": "{{ url('/') }}",
+    "logo": "{{ asset('assets/images/app-icon.png') }}",
+    "contactPoint": {
+        "@type": "ContactPoint",
+        "email": "support@docsmind.app",
+        "contactType": "customer support"
+    },
+    "sameAs": []
+}
+</script>
+@endsection
 
 @section('content')
 <!-- Hero Section -->
-<section class="hero" id="home">
+<section class="hero" id="home" itemscope itemtype="https://schema.org/SoftwareApplication">
     <div class="container">
         <div class="hero-content">
-            <div class="hero-badge">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <div class="hero-badge" aria-label="AI-Powered Document Analysis">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                 </svg>
-                AI-Powered Document Analysis
+                <span itemprop="applicationCategory">AI-Powered Document Analysis</span>
             </div>
             
-            <h1>Summarize Documents<br>in Seconds</h1>
+            <h1>Summarize Documents<br>in Seconds with <span itemprop="name">DocMind AI</span></h1>
             
-            <p>Upload any document and let AI extract the key insights, create summaries, and help you understand complex content faster than ever.</p>
+            <p itemprop="description">Upload any PDF, Word document, or image and let AI extract key insights, create summaries with key points and action items — understand complex content faster than ever.</p>
             
             <div class="hero-buttons">
-                <a href="https://apps.apple.com/app/id6757693350" class="app-store-btn" id="download" target="_blank" rel="noopener">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
+                <a href="https://apps.apple.com/app/id6757693350" class="app-store-btn" id="download" target="_blank" rel="noopener" aria-label="Download DocMind AI on the App Store" itemprop="downloadUrl">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                         <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
                     </svg>
                     <span>
@@ -32,9 +105,11 @@
                 
                 <a href="#features" class="btn btn-outline">Learn More</a>
             </div>
+            <meta itemprop="operatingSystem" content="iOS">
+            <meta itemprop="softwareVersion" content="1.0">
         </div>
         
-        <div class="hero-visual">
+        <div class="hero-visual" role="img" aria-label="DocMind AI app screenshot showing document summarization on iPhone">
             <div class="phone-mockup">
                 <div class="phone-screen">
                     <div class="phone-header">
@@ -52,14 +127,14 @@
                             <div class="doc-icon">PDF</div>
                             <div class="doc-info">
                                 <h5>Annual Report 2024.pdf</h5>
-                                <p>PDF • 2.4 MB • 24 pages</p>
+                                <p>PDF &bull; 2.4 MB &bull; 24 pages</p>
                             </div>
                         </div>
                         <div class="mock-card doc">
                             <div class="doc-icon" style="background: #E3F2FD; color: #1976D2;">DOC</div>
                             <div class="doc-info">
                                 <h5>Project Proposal.docx</h5>
-                                <p>DOCX • 856 KB • 12 pages</p>
+                                <p>DOCX &bull; 856 KB &bull; 12 pages</p>
                             </div>
                         </div>
                     </div>
@@ -70,11 +145,11 @@
 </section>
 
 <!-- Features Section -->
-<section class="features" id="features">
+<section class="features" id="features" aria-labelledby="features-heading">
     <div class="container">
         <div class="section-header">
-            <h2>Powerful AI Features</h2>
-            <p>Everything you need to extract insights from your documents quickly and efficiently.</p>
+            <h2 id="features-heading">Powerful AI Features for Document Summarization</h2>
+            <p>Everything you need to extract insights from PDFs, Word documents, and images quickly and efficiently.</p>
         </div>
         
         <div class="features-grid">
@@ -153,10 +228,10 @@
 </section>
 
 <!-- How It Works -->
-<section class="how-it-works" id="how-it-works">
+<section class="how-it-works" id="how-it-works" aria-labelledby="how-it-works-heading">
     <div class="container">
         <div class="section-header">
-            <h2>How It Works</h2>
+            <h2 id="how-it-works-heading">How DocMind AI Works</h2>
             <p>Three simple steps to transform your documents into actionable insights.</p>
         </div>
         
@@ -183,11 +258,11 @@
 </section>
 
 <!-- Pricing Section -->
-<section class="pricing" id="pricing">
+<section class="pricing" id="pricing" aria-labelledby="pricing-heading">
     <div class="container">
         <div class="section-header">
-            <h2>Simple Pricing</h2>
-            <p>Choose the plan that works best for you. Start free, upgrade anytime.</p>
+            <h2 id="pricing-heading">Simple, Transparent Pricing</h2>
+            <p>Start summarizing documents for free. Upgrade to Pro for unlimited access.</p>
         </div>
         
         <div class="pricing-cards">
@@ -254,11 +329,11 @@
 </section>
 
 <!-- CTA Section -->
-<section class="cta">
+<section class="cta" aria-labelledby="cta-heading">
     <div class="container">
-        <h2>Ready to Get Started?</h2>
-        <p>Download DocMind AI now and start transforming your documents into insights.</p>
-        <a href="https://apps.apple.com/app/id6757693350" class="app-store-btn" target="_blank" rel="noopener">
+        <h2 id="cta-heading">Ready to Summarize Smarter?</h2>
+        <p>Download DocMind AI free on the App Store and start transforming your documents into actionable insights in seconds.</p>
+        <a href="https://apps.apple.com/app/id6757693350" class="app-store-btn" target="_blank" rel="noopener" aria-label="Download DocMind AI free on the App Store">
             <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
             </svg>

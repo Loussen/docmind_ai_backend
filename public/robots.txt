@@ -1,0 +1,9 @@
+# DocMind AI - robots.txt
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /storage/
+Disallow: /vendor/
+
+# Sitemap
+Sitemap: https://docsmind.app/sitemap.xml

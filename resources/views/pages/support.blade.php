@@ -1,7 +1,83 @@
 @extends('layouts.app')
 
-@section('title', 'Support - DocMind AI')
-@section('description', 'Get help with DocMind AI - Contact support, browse FAQs, and find answers to common questions.')
+@section('title', 'Support & FAQ - DocMind AI | Get Help with Document Summarization')
+@section('description', 'Get help with DocMind AI. Browse FAQs about AI document summarization, subscription plans, OCR features, file formats, and account management. Contact our support team.')
+@section('keywords', 'DocMind AI support, AI summarizer help, PDF summarizer FAQ, document app support, cancel subscription DocMind, OCR help, App Store support')
+
+@section('structured_data')
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+        {
+            "@type": "Question",
+            "name": "What file formats does DocMind AI support?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "DocMind AI supports PDF documents, DOCX/DOC (Microsoft Word documents), and images (JPG, PNG) processed with OCR technology."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "How many documents can I upload with the free plan?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "With the free plan, you can upload up to 3 documents per day. Each document can be up to 5MB in size. This limit resets every 24 hours. For unlimited uploads, consider upgrading to our Pro or Pro+ plans."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "How accurate are the AI summaries?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "DocMind AI uses advanced AI technology powered by OpenAI to generate summaries. While the summaries are generally accurate and helpful, they should be considered as aids to understanding rather than replacements for reading the original document."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Is my data secure?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, all data is encrypted in transit and at rest. Documents are processed securely and not shared with third parties. We use secure authentication including Sign in with Apple. You can delete your data at any time."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "How do I cancel my subscription?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Open the Settings app on your iPhone, tap your name at the top, tap Subscriptions, find and tap DocMind AI, then tap Cancel Subscription. Your subscription will remain active until the end of the current billing period."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Can I restore my purchases on a new device?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes! Install DocMind AI on your new device, sign in with the same Apple ID, go to Settings in the app, and tap Restore Purchases. Your subscription will be restored automatically."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "What's the difference between Pro and Pro+?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Pro ($4.99/month or $29.99/year) includes unlimited document uploads, 10MB max file size, and priority processing. Pro+ ($9.99/month or $59.99/year) adds everything in Pro plus 20MB max file size, advanced OCR features, longer document support, and priority support."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "How do I delete my account?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Open DocMind AI, go to Settings, scroll down and tap Delete Account, then confirm the deletion. This action is permanent and cannot be undone. All your documents and summaries will be deleted."
+            }
+        }
+    ]
+}
+</script>
+@endsection
 
 @section('content')
 <section class="legal-hero">
