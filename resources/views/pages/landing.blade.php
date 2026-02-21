@@ -118,7 +118,7 @@
                     </div>
                     <div class="phone-content">
                         <div class="mock-card usage">
-                            <h5>Daily Usage</h5>
+                            <h5>Free Usage</h5>
                             <div class="mock-progress">
                                 <div class="mock-progress-bar"></div>
                             </div>
