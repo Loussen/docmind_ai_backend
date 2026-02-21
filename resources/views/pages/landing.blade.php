@@ -88,7 +88,7 @@
                 <span itemprop="applicationCategory">AI-Powered Document and Image Analysis</span>
             </div>
             
-            <h1>Summarize Documents and Images<br>in Seconds with <span itemprop="name">DoCMind AI</span></h1>
+            <h1>Summarize Documents and Images<br>in Seconds with <br /><span itemprop="name">DoCMind AI</span></h1>
             
             <p itemprop="description">Upload any PDF, Word document, or image and let AI extract key insights, create summaries with key points and action items — understand complex content faster than ever.</p>
             
