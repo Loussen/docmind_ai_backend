@@ -52,7 +52,7 @@ class GuestController extends Controller
         if ($usageCount >= self::MAX_GUEST_SUMMARIES) {
             return response()->json([
                 'error' => 'Trial limit reached',
-                'message' => 'You have used all your free trials. Create an account to continue using DocMind AI.',
+                'message' => 'You have used all your free trials. Create an account to continue using DoCMind AI.',
                 'limit_reached' => true,
                 'used' => $usageCount,
                 'limit' => self::MAX_GUEST_SUMMARIES,

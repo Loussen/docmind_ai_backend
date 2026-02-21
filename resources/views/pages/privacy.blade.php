@@ -1,20 +1,20 @@
 @extends('layouts.app')
 
-@section('title', 'Privacy Policy - DocMind AI | How We Protect Your Data')
-@section('description', 'DocMind AI Privacy Policy. Learn how we collect, use, and protect your personal information and documents. GDPR & CCPA compliant. Your data is encrypted and secure.')
-@section('keywords', 'DocMind AI privacy policy, data protection, document security, AI app privacy, GDPR, CCPA, data encryption')
+@section('title', 'Privacy Policy - DoCMind AI | How We Protect Your Data')
+@section('description', 'DoCMind AI Privacy Policy. Learn how we collect, use, and protect your personal information and documents. GDPR & CCPA compliant. Your data is encrypted and secure.')
+@section('keywords', 'DoCMind AI privacy policy, data protection, document security, AI app privacy, GDPR, CCPA, data encryption')
 
 @section('structured_data')
 <script type="application/ld+json">
 {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "name": "Privacy Policy - DocMind AI",
-    "description": "Privacy Policy for DocMind AI document summarization app",
+    "name": "Privacy Policy - DoCMind AI",
+    "description": "Privacy Policy for DoCMind AI document summarization app",
     "url": "{{ url('/privacy') }}",
     "isPartOf": {
         "@type": "WebSite",
-        "name": "DocMind AI",
+        "name": "DoCMind AI",
         "url": "{{ url('/') }}"
     },
     "breadcrumb": {
@@ -47,7 +47,7 @@
 
 <section class="legal-content">
     <div class="container">
-        <p>Welcome to DocMind AI ("we," "our," or "us"). This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our mobile application and related services (collectively, the "Service").</p>
+        <p>Welcome to DoCMind AI ("we," "our," or "us"). This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our mobile application and related services (collectively, the "Service").</p>
         
         <h2>1. Information We Collect</h2>
         

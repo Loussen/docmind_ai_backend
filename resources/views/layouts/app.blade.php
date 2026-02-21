@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="@yield('description', 'DocMind AI - Transform your documents into intelligent summaries with AI-powered analysis. Upload PDFs, DOCX files, and images for instant insights.')">
-    <meta name="keywords" content="@yield('keywords', 'AI document summary, PDF summarizer, document analysis, OCR, text extraction, AI assistant, summarize PDF, document reader, AI notes')">
-    <meta name="author" content="DocMind AI">
+    <meta name="description" content="@yield('description', 'DoCMind AI - Transform your documents into intelligent summaries with AI-powered analysis. Upload PDFs, DOCX files, and images for instant insights.')">
+    <meta name="keywords" content="@yield('keywords', 'AI document summary, image to text, document analysis, OCR, text extraction, AI assistant, summarize PDF, document reader, for study')">
+    <meta name="author" content="DoCMind AI">
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#5C6BC0">
     
@@ -13,26 +13,26 @@
     <link rel="canonical" href="{{ url()->current() }}">
     
     <!-- Open Graph -->
-    <meta property="og:title" content="@yield('title', 'DocMind AI - AI-Powered Document Summarization')">
-    <meta property="og:description" content="@yield('description', 'Transform your documents into intelligent summaries with AI-powered analysis.')">
+    <meta property="og:title" content="@yield('title', 'DoCMind AI - AI-Powered Document and Image Summarization')">
+    <meta property="og:description" content="@yield('description', 'Transform your documents and images into intelligent summaries with AI-powered analysis.')">
     <meta property="og:image" content="{{ asset('assets/images/og-image.png') }}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:site_name" content="DocMind AI">
+    <meta property="og:site_name" content="DoCMind AI">
     <meta property="og:locale" content="en_US">
     
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="@yield('title', 'DocMind AI')">
+    <meta name="twitter:title" content="@yield('title', 'DoCMind AI')">
     <meta name="twitter:description" content="@yield('description', 'AI-Powered Document Summarization')">
     <meta name="twitter:image" content="{{ asset('assets/images/og-image.png') }}">
     
     <!-- Apple Smart App Banner -->
     <meta name="apple-itunes-app" content="app-id=6757693350">
     
-    <title>@yield('title', 'DocMind AI - AI-Powered Document Summarization')</title>
+    <title>@yield('title', 'DoCMind AI - AI-Powered Document and Image Summarization')</title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('assets/images/app-icon.png') }}">
@@ -55,9 +55,9 @@
     <!-- Navigation -->
     <nav class="navbar" id="navbar" aria-label="Main navigation">
         <div class="container">
-            <a href="{{ route('home') }}" class="logo" aria-label="DocMind AI - Home">
-                <img src="{{ asset('assets/images/app-icon.png') }}" alt="DocMind AI logo" width="40" height="40">
-                <span>DocMind AI</span>
+            <a href="{{ route('home') }}" class="logo" aria-label="DoCMind AI - Home">
+                <img src="{{ asset('assets/images/app-icon.png') }}" alt="DoCMind AI logo" width="40" height="40">
+                <span>DoCMind AI</span>
             </a>
             
             <ul class="nav-links">
@@ -67,7 +67,7 @@
             </ul>
             
             <div class="nav-cta">
-                <a href="https://apps.apple.com/app/id6757693350" class="btn btn-primary" target="_blank" rel="noopener" aria-label="Download DocMind AI on the App Store">Download App</a>
+                <a href="https://apps.apple.com/app/id6757693350" class="btn btn-primary" target="_blank" rel="noopener" aria-label="Download DoCMind AI on the App Store">Download App</a>
             </div>
         </div>
     </nav>
@@ -82,9 +82,9 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-brand">
-                    <a href="{{ route('home') }}" class="logo" aria-label="DocMind AI - Home">
-                        <img src="{{ asset('assets/images/app-icon.png') }}" alt="DocMind AI logo" width="40" height="40" loading="lazy">
-                        <span>DocMind AI</span>
+                    <a href="{{ route('home') }}" class="logo" aria-label="DoCMind AI - Home">
+                        <img src="{{ asset('assets/images/app-icon.png') }}" alt="DoCMind AI logo" width="40" height="40" loading="lazy">
+                        <span>DoCMind AI</span>
                     </a>
                     <p>Transform your documents into intelligent summaries with AI-powered analysis. Available on the App Store for iPhone.</p>
                 </div>
@@ -115,7 +115,7 @@
             </div>
             
             <div class="footer-bottom">
-                <p>&copy; {{ date('Y') }} DocMind AI. All rights reserved.</p>
+                <p>&copy; {{ date('Y') }} DoCMind AI. All rights reserved.</p>
                 <div class="social-links">
                     <a href="#" aria-label="Twitter">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

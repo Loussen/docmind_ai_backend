@@ -1,20 +1,20 @@
 @extends('layouts.app')
 
-@section('title', 'Terms of Service - DocMind AI | Usage Terms & Conditions')
-@section('description', 'Terms of Service for DocMind AI. Read our terms and conditions for using the AI-powered document summarization app. Subscription, refund, and usage policies.')
-@section('keywords', 'DocMind AI terms of service, app terms and conditions, subscription terms, AI app usage policy, document summarizer terms')
+@section('title', 'Terms of Service - DoCMind AI | Usage Terms & Conditions')
+@section('description', 'Terms of Service for DoCMind AI. Read our terms and conditions for using the AI-powered document summarization app. Subscription, refund, and usage policies.')
+@section('keywords', 'DoCMind AI terms of service, app terms and conditions, subscription terms, AI app usage policy, document summarizer terms')
 
 @section('structured_data')
 <script type="application/ld+json">
 {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "name": "Terms of Service - DocMind AI",
-    "description": "Terms of Service for DocMind AI document summarization app",
+    "name": "Terms of Service - DoCMind AI",
+    "description": "Terms of Service for DoCMind AI document summarization app",
     "url": "{{ url('/terms') }}",
     "isPartOf": {
         "@type": "WebSite",
-        "name": "DocMind AI",
+        "name": "DoCMind AI",
         "url": "{{ url('/') }}"
     },
     "breadcrumb": {
@@ -47,7 +47,7 @@
 
 <section class="legal-content">
     <div class="container">
-        <p>Welcome to DocMind AI. These Terms of Service ("Terms") govern your access to and use of the DocMind AI mobile application and related services (collectively, the "Service") provided by DocMind AI ("we," "us," or "our").</p>
+        <p>Welcome to DoCMind AI. These Terms of Service ("Terms") govern your access to and use of the DoCMind AI mobile application and related services (collectively, the "Service") provided by DoCMind AI ("we," "us," or "our").</p>
         
         <p><strong>By downloading, installing, or using our Service, you agree to be bound by these Terms. If you do not agree to these Terms, do not use the Service.</strong></p>
         
@@ -60,7 +60,7 @@
         </ul>
         
         <h2>2. Description of Service</h2>
-        <p>DocMind AI provides an AI-powered document summarization service that allows users to:</p>
+        <p>DoCMind AI provides an AI-powered document summarization service that allows users to:</p>
         <ul>
             <li>Upload documents (PDF, DOCX, images)</li>
             <li>Extract text using OCR technology</li>

@@ -1,4 +1,4 @@
-# DocMind AI - robots.txt
+# DoCMind AI - robots.txt
 User-agent: *
 Allow: /
 Disallow: /api/

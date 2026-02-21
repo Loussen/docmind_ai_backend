@@ -1,8 +1,8 @@
 {
     "name": "docmind/api",
     "type": "project",
-    "description": "DocMind AI - Smart Document Summarizer API",
-    "keywords": ["laravel", "ai", "document", "summarizer"],
+    "description": "DoCMind AI - OCR, Doc & AI Summarizer",
+    "keywords": ["laravel", "ai", "document", "image", "photo", "ocr", "summarizer"],
     "license": "MIT",
     "require": {
         "php": "^8.2",

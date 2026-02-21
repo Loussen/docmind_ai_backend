@@ -1,15 +1,15 @@
 @extends('layouts.app')
 
-@section('title', 'DocMind AI - AI-Powered Document Summarization App for iPhone')
-@section('description', 'DocMind AI summarizes PDFs, Word docs & images in seconds using AI. Download free on the App Store. Try without an account. Smart OCR, key points & action items.')
-@section('keywords', 'AI document summarizer, PDF summary app, summarize PDF iPhone, document reader AI, OCR app iOS, AI notes app, DocMind AI, text extraction app, DOCX summarizer, AI document analysis, App Store')
+@section('title', 'DoCMind AI - AI-Powered Document and Image Summarization App for iPhone')
+@section('description', 'DoCMind AI summarizes PDFs, Word docs & images in seconds using AI. Download free on the App Store. Try without an account. Smart OCR, key points & action items.')
+@section('keywords', 'AI document summarizer, PDF summary app, summarize PDF iPhone, document reader AI, OCR app iOS, AI notes app, DoCMind AI, text extraction app, DOCX summarizer, AI document analysis, App Store')
 
 @section('structured_data')
 <script type="application/ld+json">
 {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": "DocMind AI",
+    "name": "DoCMind AI",
     "description": "AI-Powered Document Summarization App. Upload PDFs, Word documents, and images to get instant AI-generated summaries, key points, and action items.",
     "applicationCategory": "ProductivityApplication",
     "operatingSystem": "iOS",
@@ -40,7 +40,7 @@
     "screenshot": "{{ asset('assets/images/og-image.png') }}",
     "author": {
         "@type": "Organization",
-        "name": "DocMind AI",
+        "name": "DoCMind AI",
         "url": "{{ url('/') }}"
     }
 }
@@ -49,7 +49,7 @@
 {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "DocMind AI",
+    "name": "DoCMind AI",
     "url": "{{ url('/') }}",
     "description": "AI-Powered Document Summarization",
     "potentialAction": {
@@ -63,7 +63,7 @@
 {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "DocMind AI",
+    "name": "DoCMind AI",
     "url": "{{ url('/') }}",
     "logo": "{{ asset('assets/images/app-icon.png') }}",
     "contactPoint": {
@@ -88,12 +88,12 @@
                 <span itemprop="applicationCategory">AI-Powered Document Analysis</span>
             </div>
             
-            <h1>Summarize Documents<br>in Seconds with <span itemprop="name">DocMind AI</span></h1>
+            <h1>Summarize Documents and Images<br>in Seconds with <span itemprop="name">DoCMind AI</span></h1>
             
             <p itemprop="description">Upload any PDF, Word document, or image and let AI extract key insights, create summaries with key points and action items — understand complex content faster than ever.</p>
             
             <div class="hero-buttons">
-                <a href="https://apps.apple.com/app/id6757693350" class="app-store-btn" id="download" target="_blank" rel="noopener" aria-label="Download DocMind AI on the App Store" itemprop="downloadUrl">
+                <a href="https://apps.apple.com/app/id6757693350" class="app-store-btn" id="download" target="_blank" rel="noopener" aria-label="Download DoCMind AI on the App Store" itemprop="downloadUrl">
                     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                         <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
                     </svg>
@@ -109,12 +109,12 @@
             <meta itemprop="softwareVersion" content="1.0">
         </div>
         
-        <div class="hero-visual" role="img" aria-label="DocMind AI app screenshot showing document summarization on iPhone">
+        <div class="hero-visual" role="img" aria-label="DoCMind AI app screenshot showing document summarization on iPhone">
             <div class="phone-mockup">
                 <div class="phone-screen">
                     <div class="phone-header">
                         <h4>Hello, there</h4>
-                        <h3>DocMind AI</h3>
+                        <h3>DoCMind AI</h3>
                     </div>
                     <div class="phone-content">
                         <div class="mock-card usage">
@@ -231,7 +231,7 @@
 <section class="how-it-works" id="how-it-works" aria-labelledby="how-it-works-heading">
     <div class="container">
         <div class="section-header">
-            <h2 id="how-it-works-heading">How DocMind AI Works</h2>
+            <h2 id="how-it-works-heading">How DoCMind AI Works</h2>
             <p>Three simple steps to transform your documents into actionable insights.</p>
         </div>
         
@@ -332,8 +332,8 @@
 <section class="cta" aria-labelledby="cta-heading">
     <div class="container">
         <h2 id="cta-heading">Ready to Summarize Smarter?</h2>
-        <p>Download DocMind AI free on the App Store and start transforming your documents into actionable insights in seconds.</p>
-        <a href="https://apps.apple.com/app/id6757693350" class="app-store-btn" target="_blank" rel="noopener" aria-label="Download DocMind AI free on the App Store">
+        <p>Download DoCMind AI free on the App Store and start transforming your documents into actionable insights in seconds.</p>
+        <a href="https://apps.apple.com/app/id6757693350" class="app-store-btn" target="_blank" rel="noopener" aria-label="Download DoCMind AI free on the App Store">
             <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
             </svg>
