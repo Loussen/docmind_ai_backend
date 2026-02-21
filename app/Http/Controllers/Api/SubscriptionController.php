@@ -249,15 +249,22 @@ class SubscriptionController extends Controller
 
     private function formatSubscription(Subscription $subscription): array
     {
+        $billingPeriod = 'monthly';
+        if ($subscription->apple_product_id && str_contains($subscription->apple_product_id, 'yearly')) {
+            $billingPeriod = 'yearly';
+        }
+
         return [
             'id' => $subscription->id,
             'device_id' => $subscription->device_id,
             'plan' => $subscription->plan,
             'status' => $subscription->status,
+            'billing_period' => $billingPeriod,
             'start_date' => $subscription->start_date?->toISOString(),
             'end_date' => $subscription->end_date?->toISOString(),
             'apple_transaction_id' => $subscription->apple_transaction_id,
             'apple_original_transaction_id' => $subscription->apple_original_transaction_id,
+            'apple_product_id' => $subscription->apple_product_id,
             'is_auto_renewing' => $subscription->is_auto_renewing,
             'created_at' => $subscription->created_at->toISOString(),
             'updated_at' => $subscription->updated_at->toISOString(),
