@@ -230,24 +230,19 @@ class SubscriptionController extends Controller
     public function usage(Request $request): JsonResponse
     {
         $device = $request->attributes->get('device');
-        $subscription = $device->subscription;
 
-        $dailyLimit = $subscription?->getDocsPerDay() ?? 3;
-        $dailyUsed = $device->usageLogs()
-            ->where('action', 'upload')
-            ->whereDate('usage_date', today())
-            ->count();
-
+        $totalUsed = $device->getTotalUsageCount();
+        $freeLimit = 2;
         $totalDocs = $device->documents()->count();
         $totalSummaries = $device->summaries()->count();
 
         return response()->json([
             'usage' => [
-                'daily_docs_used' => $dailyUsed,
-                'daily_docs_limit' => $dailyLimit,
+                'total_used' => $totalUsed,
+                'free_limit' => $freeLimit,
+                'is_premium' => $device->isPremium(),
                 'total_docs_processed' => $totalDocs,
                 'total_summaries_generated' => $totalSummaries,
-                'last_reset_date' => today()->startOfDay()->toISOString(),
             ],
         ]);
     }

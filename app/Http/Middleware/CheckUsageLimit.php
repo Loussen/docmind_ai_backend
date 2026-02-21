@@ -13,30 +13,25 @@ class CheckUsageLimit
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $user = $request->user();
+        $device = $request->attributes->get('device');
 
-        if (!$user) {
+        if (!$device) {
             return response()->json([
-                'error' => 'Unauthenticated',
-                'message' => 'Please log in to access this resource.',
+                'error' => 'Device not found',
+                'message' => 'Please register your device first.',
             ], 401);
         }
 
-        // Premium users bypass limits
-        if ($user->isPremium()) {
+        if ($device->isPremium()) {
             return $next($request);
         }
 
-        // Check daily upload limit for free users
-        if (!$user->canUploadDocument()) {
-            $limit = config('docmind.plans.free.docs_per_day', 3);
-            
+        if (!$device->canUploadDocument()) {
             return response()->json([
-                'error' => 'Daily limit exceeded',
-                'message' => "You have reached your daily limit of {$limit} documents. Upgrade to Pro for unlimited access.",
-                'limit' => $limit,
-                'used' => $user->getDailyUsageCount(),
-                'resets_at' => now()->addDay()->startOfDay()->toISOString(),
+                'error' => 'Free limit reached',
+                'message' => 'You have used your 2 free documents. Upgrade to Pro for unlimited access.',
+                'free_limit' => 2,
+                'total_used' => $device->getTotalUsageCount(),
             ], 429);
         }
 

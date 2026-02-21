@@ -54,19 +54,17 @@ class Device extends Model
                $subscription->plan === 'pro_plus';
     }
 
-    public function getDailyUsageCount(): int
+    public function getTotalUsageCount(): int
     {
         return $this->usageLogs()
             ->where('action', 'upload')
-            ->whereDate('usage_date', today())
             ->count();
     }
 
     public function canUploadDocument(): bool
     {
         if ($this->isPremium()) return true;
-        $dailyLimit = config('docmind.plans.free.docs_per_day', 3);
-        return $this->getDailyUsageCount() < $dailyLimit;
+        return $this->getTotalUsageCount() < 2;
     }
 
     public function getSubscriptionPlan(): string

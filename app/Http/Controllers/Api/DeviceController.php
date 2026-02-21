@@ -52,7 +52,8 @@ class DeviceController extends Controller
                 'device_id' => $device->device_id,
                 'platform' => $device->platform,
                 'subscription_plan' => $device->getSubscriptionPlan(),
-                'daily_usage_count' => $device->getDailyUsageCount(),
+                'total_usage_count' => $device->getTotalUsageCount(),
+                'free_limit' => 2,
                 'created_at' => $device->created_at->toISOString(),
             ],
         ]);
@@ -70,7 +71,8 @@ class DeviceController extends Controller
                 'device_id' => $device->device_id,
                 'platform' => $device->platform,
                 'subscription_plan' => $device->getSubscriptionPlan(),
-                'daily_usage_count' => $device->getDailyUsageCount(),
+                'total_usage_count' => $device->getTotalUsageCount(),
+                'free_limit' => 2,
                 'created_at' => $device->created_at->toISOString(),
             ],
         ]);

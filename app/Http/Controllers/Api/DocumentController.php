@@ -76,8 +76,8 @@ class DocumentController extends Controller
 
         if (!$device->canUploadDocument()) {
             return response()->json([
-                'error' => 'Daily upload limit reached',
-                'message' => 'You have reached your daily document limit. Upgrade to Pro for unlimited access.',
+                'error' => 'Free limit reached',
+                'message' => 'You have used your 2 free documents. Upgrade to Pro for unlimited access.',
             ], 429);
         }
 

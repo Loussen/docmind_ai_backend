@@ -11,7 +11,7 @@ return [
     
     'max_pages_free' => env('MAX_PAGES_FREE', 5),
     
-    'max_docs_per_day_free' => env('MAX_DOCS_PER_DAY_FREE', 3),
+    'free_docs_total' => env('FREE_DOCS_TOTAL', 2),
     
     'supported_extensions' => ['pdf', 'docx', 'doc', 'jpg', 'jpeg', 'png'],
     
@@ -44,12 +44,12 @@ return [
     'plans' => [
         'free' => [
             'name' => 'Free',
-            'docs_per_day' => 3,
+            'docs_total' => 2,
             'pages_per_doc' => 5,
             'price_monthly' => 0,
             'price_yearly' => 0,
             'features' => [
-                '3 documents per day',
+                '2 free documents',
                 '5 pages per document',
                 'Basic AI summaries',
             ],
