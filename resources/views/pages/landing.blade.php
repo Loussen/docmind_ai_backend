@@ -81,11 +81,11 @@
 <section class="hero" id="home" itemscope itemtype="https://schema.org/SoftwareApplication">
     <div class="container">
         <div class="hero-content">
-            <div class="hero-badge" aria-label="AI-Powered Document Analysis">
+            <div class="hero-badge" aria-label="AI-Powered Document and Image Analysis">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                 </svg>
-                <span itemprop="applicationCategory">AI-Powered Document Analysis</span>
+                <span itemprop="applicationCategory">AI-Powered Document and Image Analysis</span>
             </div>
             
             <h1>Summarize Documents and Images<br>in Seconds with <span itemprop="name">DoCMind AI</span></h1>
