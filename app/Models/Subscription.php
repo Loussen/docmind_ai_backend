@@ -65,12 +65,6 @@ class Subscription extends Model
         return $this->plan === 'free';
     }
 
-    public function getDocsPerDay(): int
-    {
-        $planConfig = config("docmind.plans.{$this->plan}");
-        return $planConfig['docs_per_day'] ?? 3;
-    }
-
     public function getPagesPerDoc(): int
     {
         $planConfig = config("docmind.plans.{$this->plan}");
