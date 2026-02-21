@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Subscription\VerifyPurchaseRequest;
 use App\Models\Subscription;
 use App\Models\UsageLog;
 use App\Services\AppleReceiptVerificationService;
@@ -18,12 +17,12 @@ class SubscriptionController extends Controller
 
     public function show(Request $request): JsonResponse
     {
-        $subscription = $request->user()->subscription;
+        $device = $request->attributes->get('device');
+        $subscription = $device->subscription;
 
         if (!$subscription) {
-            // Create default free subscription
             $subscription = Subscription::create([
-                'user_id' => $request->user()->id,
+                'device_id' => $device->device_id,
                 'plan' => 'free',
                 'status' => 'active',
                 'start_date' => now(),
@@ -55,17 +54,23 @@ class SubscriptionController extends Controller
         ]);
     }
 
-    public function verify(VerifyPurchaseRequest $request): JsonResponse
+    public function verify(Request $request): JsonResponse
     {
-        $user = $request->user();
-        
+        $request->validate([
+            'product_id' => 'required|string',
+            'transaction_id' => 'required|string',
+            'receipt_data' => 'required|string',
+        ]);
+
+        $device = $request->attributes->get('device');
+
         try {
             \Log::info('Purchase verification started', [
-                'user_id' => $user->id,
+                'device_id' => $device->device_id,
                 'product_id' => $request->product_id,
                 'transaction_id' => $request->transaction_id,
             ]);
-            
+
             $verificationResult = $this->appleVerification->verify(
                 receiptData: $request->receipt_data,
                 productId: $request->product_id
@@ -73,25 +78,21 @@ class SubscriptionController extends Controller
 
             \Log::info('Verification result', $verificationResult);
 
-            // Check if verification was successful
             if (!$verificationResult['valid']) {
                 \Log::warning('Purchase verification failed', [
-                    'user_id' => $user->id,
+                    'device_id' => $device->device_id,
                     'message' => $verificationResult['message'] ?? 'Unknown error',
-                    'environment' => $verificationResult['environment'] ?? 'unknown',
                 ]);
-                
+
                 return response()->json([
                     'success' => false,
                     'message' => $verificationResult['message'] ?? 'Receipt verification failed',
                 ], 400);
             }
 
-            // Determine plan from product ID (use receipt product ID if available)
             $actualProductId = $verificationResult['subscription']['product_id'] ?? $request->product_id;
             $plan = $this->getPlanFromProductId($actualProductId);
-            
-            // Calculate end date - use from receipt if available, otherwise calculate
+
             $receiptExpiresDate = $verificationResult['subscription']['expires_date'] ?? null;
             if ($receiptExpiresDate) {
                 $endDate = new \DateTime($receiptExpiresDate);
@@ -99,10 +100,10 @@ class SubscriptionController extends Controller
                 $endDate = $this->calculateEndDate($actualProductId);
             }
 
-            // Create or update subscription
-            $subscription = $user->subscription;
-            
+            $subscription = $device->subscription;
+
             $subscriptionData = [
+                'device_id' => $device->device_id,
                 'plan' => $plan,
                 'status' => 'active',
                 'start_date' => now(),
@@ -113,14 +114,11 @@ class SubscriptionController extends Controller
                 'is_auto_renewing' => $verificationResult['auto_renewing'] ?? false,
                 'receipt_data' => ['receipt' => $request->receipt_data],
             ];
-            
+
             if ($subscription) {
                 $subscription->update($subscriptionData);
-                \Log::info('Subscription updated', ['subscription_id' => $subscription->id, 'plan' => $plan]);
             } else {
-                $subscriptionData['user_id'] = $user->id;
                 $subscription = Subscription::create($subscriptionData);
-                \Log::info('Subscription created', ['subscription_id' => $subscription->id, 'plan' => $plan]);
             }
 
             return response()->json([
@@ -131,11 +129,10 @@ class SubscriptionController extends Controller
 
         } catch (\Exception $e) {
             \Log::error('Purchase verification error', [
-                'user_id' => $user->id,
+                'device_id' => $device->device_id,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
             ]);
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Verification failed: ' . $e->getMessage(),
@@ -143,9 +140,78 @@ class SubscriptionController extends Controller
         }
     }
 
+    public function restore(Request $request): JsonResponse
+    {
+        $request->validate([
+            'receipt_data' => 'required|string',
+        ]);
+
+        $device = $request->attributes->get('device');
+
+        try {
+            $verificationResult = $this->appleVerification->verify(
+                receiptData: $request->receipt_data,
+                productId: ''
+            );
+
+            if (!$verificationResult['valid']) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No active subscription found to restore.',
+                ], 400);
+            }
+
+            $actualProductId = $verificationResult['subscription']['product_id'] ?? '';
+            if (empty($actualProductId)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No active subscription found.',
+                ], 400);
+            }
+
+            $plan = $this->getPlanFromProductId($actualProductId);
+
+            $receiptExpiresDate = $verificationResult['subscription']['expires_date'] ?? null;
+            $endDate = $receiptExpiresDate ? new \DateTime($receiptExpiresDate) : $this->calculateEndDate($actualProductId);
+
+            $subscription = $device->subscription;
+
+            $subscriptionData = [
+                'device_id' => $device->device_id,
+                'plan' => $plan,
+                'status' => 'active',
+                'start_date' => now(),
+                'end_date' => $endDate,
+                'apple_original_transaction_id' => $verificationResult['original_transaction_id'] ?? null,
+                'apple_product_id' => $actualProductId,
+                'is_auto_renewing' => $verificationResult['auto_renewing'] ?? false,
+                'receipt_data' => ['receipt' => $request->receipt_data],
+            ];
+
+            if ($subscription) {
+                $subscription->update($subscriptionData);
+            } else {
+                $subscription = Subscription::create($subscriptionData);
+            }
+
+            return response()->json([
+                'success' => true,
+                'subscription' => $this->formatSubscription($subscription),
+                'message' => 'Subscription restored successfully',
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Restore failed: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
     public function cancel(Request $request): JsonResponse
     {
-        $subscription = $request->user()->subscription;
+        $device = $request->attributes->get('device');
+        $subscription = $device->subscription;
 
         if (!$subscription || $subscription->plan === 'free') {
             return response()->json([
@@ -156,21 +222,24 @@ class SubscriptionController extends Controller
         $subscription->cancel();
 
         return response()->json([
-            'message' => 'Subscription cancelled. You will retain access until the end of your billing period.',
+            'message' => 'Subscription cancelled.',
             'subscription' => $this->formatSubscription($subscription),
         ]);
     }
 
     public function usage(Request $request): JsonResponse
     {
-        $user = $request->user();
-        $subscription = $user->subscription;
-        
+        $device = $request->attributes->get('device');
+        $subscription = $device->subscription;
+
         $dailyLimit = $subscription?->getDocsPerDay() ?? 3;
-        $dailyUsed = UsageLog::getDailyCount($user, 'upload');
-        
-        $totalDocs = $user->documents()->count();
-        $totalSummaries = $user->summaries()->count();
+        $dailyUsed = $device->usageLogs()
+            ->where('action', 'upload')
+            ->whereDate('usage_date', today())
+            ->count();
+
+        $totalDocs = $device->documents()->count();
+        $totalSummaries = $device->summaries()->count();
 
         return response()->json([
             'usage' => [
@@ -187,7 +256,7 @@ class SubscriptionController extends Controller
     {
         return [
             'id' => $subscription->id,
-            'user_id' => $subscription->user_id,
+            'device_id' => $subscription->device_id,
             'plan' => $subscription->plan,
             'status' => $subscription->status,
             'start_date' => $subscription->start_date?->toISOString(),
@@ -203,7 +272,7 @@ class SubscriptionController extends Controller
     private function getPlanFromProductId(string $productId): string
     {
         $plans = config('docmind.plans');
-        
+
         foreach ($plans as $key => $plan) {
             if (isset($plan['apple_product_monthly']) && $plan['apple_product_monthly'] === $productId) {
                 return $key;
@@ -212,17 +281,13 @@ class SubscriptionController extends Controller
                 return $key;
             }
         }
-        
+
         return 'pro';
     }
 
     private function calculateEndDate(string $productId): \DateTime
     {
         $isYearly = str_contains($productId, 'yearly');
-        
-        return $isYearly
-            ? now()->addYear()
-            : now()->addMonth();
+        return $isYearly ? now()->addYear() : now()->addMonth();
     }
 }
-

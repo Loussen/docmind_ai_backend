@@ -7,12 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property string|null $device_id
+ */
 class UsageLog extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'user_id',
+        'device_id',
         'document_id',
         'summary_id',
         'action',
@@ -68,6 +72,27 @@ class UsageLog extends Model
             ->where('action', $action)
             ->whereDate('usage_date', today())
             ->count();
+    }
+
+    public static function logUploadByDevice(Device $device, Document $document): self
+    {
+        return self::create([
+            'device_id' => $device->device_id,
+            'document_id' => $document->id,
+            'action' => 'upload',
+            'usage_date' => today(),
+        ]);
+    }
+
+    public static function logSummarizeByDevice(Device $device, Document $document, Summary $summary): self
+    {
+        return self::create([
+            'device_id' => $device->device_id,
+            'document_id' => $document->id,
+            'summary_id' => $summary->id,
+            'action' => 'summarize',
+            'usage_date' => today(),
+        ]);
     }
 }
 

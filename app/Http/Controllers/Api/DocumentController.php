@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Document\UploadDocumentRequest;
 use App\Models\Document;
 use App\Models\UsageLog;
 use App\Services\DocumentParserService;
@@ -20,11 +19,10 @@ class DocumentController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        $query = $request->user()
-            ->documents()
-            ->with('summary:id,document_id,title');
+        $device = $request->attributes->get('device');
 
-        // Filter by type
+        $query = $device->documents()->with('summary:id,document_id,title');
+
         $type = $request->get('type');
         if ($type && $type !== 'all') {
             if ($type === 'image') {
@@ -34,19 +32,16 @@ class DocumentController extends Controller
             }
         }
 
-        // Filter by status
         $status = $request->get('status');
         if ($status) {
             $query->where('status', $status);
         }
 
-        // Search by name
         $search = $request->get('search');
         if ($search) {
             $query->where('original_name', 'like', "%{$search}%");
         }
 
-        // Date filter
         $dateFrom = $request->get('date_from');
         $dateTo = $request->get('date_to');
         if ($dateFrom) {
@@ -71,18 +66,20 @@ class DocumentController extends Controller
         ]);
     }
 
-    public function store(UploadDocumentRequest $request): JsonResponse
+    public function store(Request $request): JsonResponse
     {
-        $user = $request->user();
+        $request->validate([
+            'document' => 'required|file|mimes:pdf,docx,doc,jpg,jpeg,png|max:10240',
+        ]);
 
-        // TODO: Re-enable usage limits after testing
-        // Check usage limits for free users
-         if (!$user->canUploadDocument()) {
-             return response()->json([
-                 'error' => 'Daily upload limit reached',
-                 'message' => 'You have reached your daily document limit. Upgrade to Pro for unlimited access.',
-             ], 429);
-         }
+        $device = $request->attributes->get('device');
+
+        if (!$device->canUploadDocument()) {
+            return response()->json([
+                'error' => 'Daily upload limit reached',
+                'message' => 'You have reached your daily document limit. Upgrade to Pro for unlimited access.',
+            ], 429);
+        }
 
         $file = $request->file('document');
         $originalName = $file->getClientOriginalName();
@@ -90,7 +87,6 @@ class DocumentController extends Controller
         $mimeType = $file->getMimeType();
         $fileSize = $file->getSize();
 
-        // Determine document type
         $type = match ($extension) {
             'pdf' => 'pdf',
             'docx' => 'docx',
@@ -99,13 +95,11 @@ class DocumentController extends Controller
             default => 'pdf',
         };
 
-        // Generate unique file name
         $fileName = Str::uuid() . '.' . $extension;
-        $filePath = $file->storeAs('documents/' . $user->id, $fileName, 'local');
+        $filePath = $file->storeAs('documents/' . $device->device_id, $fileName, 'local');
 
-        // Create document record
         $document = Document::create([
-            'user_id' => $user->id,
+            'device_id' => $device->device_id,
             'file_name' => $fileName,
             'original_name' => $originalName,
             'file_path' => $filePath,
@@ -115,13 +109,11 @@ class DocumentController extends Controller
             'status' => 'processing',
         ]);
 
-        // Log usage
-        UsageLog::logUpload($user, $document);
+        UsageLog::logUploadByDevice($device, $document);
 
-        // Process document in background (for now, we'll do it synchronously)
         try {
             $result = $this->documentParser->parse($document);
-            
+
             $document->update([
                 'extracted_text' => $result['text'],
                 'page_count' => $result['page_count'],
@@ -142,8 +134,9 @@ class DocumentController extends Controller
 
     public function show(Request $request, string $id): JsonResponse
     {
-        $document = $request->user()
-            ->documents()
+        $device = $request->attributes->get('device');
+
+        $document = $device->documents()
             ->with('summary')
             ->findOrFail($id);
 
@@ -154,11 +147,10 @@ class DocumentController extends Controller
 
     public function destroy(Request $request, string $id): JsonResponse
     {
-        $document = $request->user()
-            ->documents()
-            ->findOrFail($id);
+        $device = $request->attributes->get('device');
 
-        // Delete file from storage
+        $document = $device->documents()->findOrFail($id);
+
         if ($document->file_path) {
             Storage::disk('local')->delete($document->file_path);
         }
@@ -176,9 +168,9 @@ class DocumentController extends Controller
 
     public function process(Request $request, string $id): JsonResponse
     {
-        $document = $request->user()
-            ->documents()
-            ->findOrFail($id);
+        $device = $request->attributes->get('device');
+
+        $document = $device->documents()->findOrFail($id);
 
         if ($document->status === 'processing') {
             return response()->json([
@@ -190,7 +182,7 @@ class DocumentController extends Controller
 
         try {
             $result = $this->documentParser->parse($document);
-            
+
             $document->update([
                 'extracted_text' => $result['text'],
                 'page_count' => $result['page_count'],
@@ -199,7 +191,7 @@ class DocumentController extends Controller
             ]);
         } catch (\Exception $e) {
             $document->markAsFailed($e->getMessage());
-            
+
             return response()->json([
                 'error' => 'Processing failed',
                 'message' => $e->getMessage(),
@@ -215,7 +207,7 @@ class DocumentController extends Controller
     {
         return [
             'id' => $document->id,
-            'user_id' => $document->user_id,
+            'device_id' => $document->device_id,
             'file_name' => $document->file_name,
             'original_name' => $document->original_name,
             'type' => $document->type,
@@ -233,4 +225,3 @@ class DocumentController extends Controller
         ];
     }
 }
-

@@ -19,6 +19,7 @@ class Document extends Model
 
     protected $fillable = [
         'user_id',
+        'device_id',
         'file_name',
         'original_name',
         'file_path',

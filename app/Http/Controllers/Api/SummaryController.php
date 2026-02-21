@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Summary\GenerateSummaryRequest;
-use App\Models\Document;
 use App\Models\Summary;
 use App\Models\UsageLog;
 use App\Services\OpenAIService;
@@ -21,8 +19,9 @@ class SummaryController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        $summaries = $request->user()
-            ->summaries()
+        $device = $request->attributes->get('device');
+
+        $summaries = $device->summaries()
             ->with('document:id,original_name,type')
             ->orderByDesc('created_at')
             ->paginate($request->get('per_page', 20));
@@ -40,8 +39,9 @@ class SummaryController extends Controller
 
     public function show(Request $request, string $id): JsonResponse
     {
-        $summary = $request->user()
-            ->summaries()
+        $device = $request->attributes->get('device');
+
+        $summary = $device->summaries()
             ->with('document')
             ->findOrFail($id);
 
@@ -50,13 +50,12 @@ class SummaryController extends Controller
         ]);
     }
 
-    public function generate(GenerateSummaryRequest $request, string $documentId): JsonResponse
+    public function generate(Request $request, string $documentId): JsonResponse
     {
-        $user = $request->user();
-        
-        $document = $user->documents()->findOrFail($documentId);
+        $device = $request->attributes->get('device');
 
-        // Check if document has extracted text
+        $document = $device->documents()->findOrFail($documentId);
+
         if (empty($document->extracted_text)) {
             return response()->json([
                 'error' => 'Document not processed',
@@ -64,18 +63,16 @@ class SummaryController extends Controller
             ], 400);
         }
 
-        // Check page limits for free users
-        $subscription = $user->subscription;
+        $subscription = $device->subscription;
         $pagesLimit = config('docmind.plans.free.pages_per_doc', 5);
-        
-        if (!$user->isPremium() && $document->page_count > $pagesLimit) {
+
+        if (!$device->isPremium() && $document->page_count > $pagesLimit) {
             return response()->json([
                 'error' => 'Page limit exceeded',
                 'message' => "Free plan allows up to {$pagesLimit} pages. Upgrade to Pro for unlimited pages.",
             ], 403);
         }
 
-        // Check if summary already exists
         if ($document->summary) {
             return response()->json([
                 'summary' => $this->formatSummary($document->summary),
@@ -86,22 +83,19 @@ class SummaryController extends Controller
         $startTime = microtime(true);
 
         try {
-            // Generate summary using OpenAI
             $summaryData = $this->openAI->generateSummary(
                 text: $document->extracted_text,
                 type: $request->summary_type ?? 'standard',
                 language: $request->language ?? 'en'
             );
 
-            // Format the summary
             $formattedSummary = $this->formatter->format($summaryData);
 
             $processingTime = (int) ((microtime(true) - $startTime) * 1000);
 
-            // Create summary record
             $summary = Summary::create([
                 'document_id' => $document->id,
-                'user_id' => $user->id,
+                'device_id' => $device->device_id,
                 'title' => $formattedSummary['title'],
                 'overview' => $formattedSummary['overview'],
                 'key_points' => $formattedSummary['key_points'],
@@ -117,8 +111,7 @@ class SummaryController extends Controller
                 'summary_type' => $request->summary_type ?? 'standard',
             ]);
 
-            // Log usage
-            UsageLog::logSummarize($user, $document, $summary);
+            UsageLog::logSummarizeByDevice($device, $document, $summary);
 
             return response()->json([
                 'summary' => $this->formatSummary($summary),
@@ -135,8 +128,9 @@ class SummaryController extends Controller
 
     public function byDocument(Request $request, string $documentId): JsonResponse
     {
-        $document = $request->user()
-            ->documents()
+        $device = $request->attributes->get('device');
+
+        $document = $device->documents()
             ->with('summary')
             ->findOrFail($documentId);
 
@@ -157,7 +151,7 @@ class SummaryController extends Controller
         return [
             'id' => $summary->id,
             'document_id' => $summary->document_id,
-            'user_id' => $summary->user_id,
+            'device_id' => $summary->device_id,
             'title' => $summary->title,
             'overview' => $summary->overview,
             'key_points' => $summary->key_points ?? [],
@@ -174,4 +168,3 @@ class SummaryController extends Controller
         ];
     }
 }
-

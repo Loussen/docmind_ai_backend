@@ -18,6 +18,7 @@ class Summary extends Model
     protected $fillable = [
         'document_id',
         'user_id',
+        'device_id',
         'title',
         'overview',
         'key_points',

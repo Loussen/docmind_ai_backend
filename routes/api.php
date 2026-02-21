@@ -1,11 +1,10 @@
 <?php
 
-use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\DeviceController;
 use App\Http\Controllers\Api\DocumentController;
 use App\Http\Controllers\Api\SummaryController;
 use App\Http\Controllers\Api\SubscriptionController;
 use App\Http\Controllers\Api\SettingsController;
-use App\Http\Controllers\Api\GuestController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,39 +18,20 @@ Route::get('/health', function () {
     return response()->json([
         'status' => 'ok',
         'timestamp' => now()->toISOString(),
-        'version' => '1.0.0',
+        'version' => '2.0.0',
     ]);
 });
 
-// Guest Routes (No authentication required)
-Route::prefix('guest')->group(function () {
-    Route::post('/summarize', [GuestController::class, 'summarize']);
-    Route::post('/check-usage', [GuestController::class, 'checkUsage']);
-});
+// Device registration (public - no middleware)
+Route::post('/device/register', [DeviceController::class, 'register']);
 
-// Authentication Routes (Public)
-Route::prefix('auth')->group(function () {
-    Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/apple', [AuthController::class, 'appleAuth']);
-});
+// Protected Routes (device.auth middleware)
+Route::middleware('device.auth')->group(function () {
 
-// Protected Routes
-Route::middleware('auth:sanctum')->group(function () {
-    
-    // Auth
-    Route::prefix('auth')->group(function () {
-        Route::get('/me', [AuthController::class, 'me']);
-        Route::post('/logout', [AuthController::class, 'logout']);
-    });
+    // Device
+    Route::get('/device/sync', [DeviceController::class, 'sync']);
 
-    // User Profile
-    Route::prefix('user')->group(function () {
-        Route::put('/profile', [AuthController::class, 'updateProfile']);
-        Route::delete('/account', [AuthController::class, 'deleteAccount']);
-    });
-
-    // User
+    // User/Device usage & settings
     Route::prefix('user')->group(function () {
         Route::get('/usage', [SubscriptionController::class, 'usage']);
         Route::get('/settings', [SettingsController::class, 'show']);
@@ -80,13 +60,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', [SubscriptionController::class, 'show']);
         Route::get('/plans', [SubscriptionController::class, 'plans']);
         Route::post('/verify', [SubscriptionController::class, 'verify']);
+        Route::post('/restore', [SubscriptionController::class, 'restore']);
         Route::post('/cancel', [SubscriptionController::class, 'cancel']);
     });
 
-    // History (combined documents and summaries)
+    // History
     Route::get('/history', function (\Illuminate\Http\Request $request) {
-        $documents = $request->user()
-            ->documents()
+        $device = $request->attributes->get('device');
+
+        $documents = $device->documents()
             ->with('summary:id,document_id,title,overview')
             ->orderByDesc('created_at')
             ->paginate(20);
@@ -102,4 +84,3 @@ Route::middleware('auth:sanctum')->group(function () {
         ]);
     });
 });
-

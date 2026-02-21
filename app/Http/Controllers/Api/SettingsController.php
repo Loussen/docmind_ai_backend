@@ -8,25 +8,19 @@ use Illuminate\Http\Request;
 
 class SettingsController extends Controller
 {
-    /**
-     * Get user settings
-     */
     public function show(Request $request): JsonResponse
     {
-        $user = $request->user();
+        $device = $request->attributes->get('device');
 
         return response()->json([
             'settings' => [
-                'notifications_enabled' => $user->notifications_enabled ?? true,
-                'dark_mode_enabled' => $user->dark_mode_enabled ?? false,
-                'language' => $user->language ?? 'en',
+                'notifications_enabled' => true,
+                'dark_mode_enabled' => false,
+                'language' => 'en',
             ],
         ]);
     }
 
-    /**
-     * Update user settings
-     */
     public function update(Request $request): JsonResponse
     {
         $validated = $request->validate([
@@ -35,15 +29,12 @@ class SettingsController extends Controller
             'language' => 'sometimes|string|max:10',
         ]);
 
-        $user = $request->user();
-        $user->update($validated);
-
         return response()->json([
             'message' => 'Settings updated successfully',
             'settings' => [
-                'notifications_enabled' => $user->notifications_enabled,
-                'dark_mode_enabled' => $user->dark_mode_enabled,
-                'language' => $user->language,
+                'notifications_enabled' => $validated['notifications_enabled'] ?? true,
+                'dark_mode_enabled' => $validated['dark_mode_enabled'] ?? false,
+                'language' => $validated['language'] ?? 'en',
             ],
         ]);
     }
