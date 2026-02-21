@@ -93,10 +93,14 @@ class SubscriptionController extends Controller
             $actualProductId = $verificationResult['subscription']['product_id'] ?? $request->product_id;
             $plan = $this->getPlanFromProductId($actualProductId);
 
+            $isSandbox = config('docmind.apple.sandbox', false);
             $receiptExpiresDate = $verificationResult['subscription']['expires_date'] ?? null;
-            if ($receiptExpiresDate) {
+
+            if ($receiptExpiresDate && !$isSandbox) {
                 $endDate = new \DateTime($receiptExpiresDate);
             } else {
+                // In sandbox, Apple uses very short durations (yearly=1h, monthly=5min).
+                // Always calculate real end date based on product ID.
                 $endDate = $this->calculateEndDate($actualProductId);
             }
 
@@ -171,8 +175,13 @@ class SubscriptionController extends Controller
 
             $plan = $this->getPlanFromProductId($actualProductId);
 
+            $isSandbox = config('docmind.apple.sandbox', false);
             $receiptExpiresDate = $verificationResult['subscription']['expires_date'] ?? null;
-            $endDate = $receiptExpiresDate ? new \DateTime($receiptExpiresDate) : $this->calculateEndDate($actualProductId);
+            if ($receiptExpiresDate && !$isSandbox) {
+                $endDate = new \DateTime($receiptExpiresDate);
+            } else {
+                $endDate = $this->calculateEndDate($actualProductId);
+            }
 
             $subscription = $device->subscription;
 
