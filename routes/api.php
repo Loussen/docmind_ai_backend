@@ -45,6 +45,7 @@ Route::middleware('device.auth')->group(function () {
         Route::get('/{id}', [DocumentController::class, 'show']);
         Route::delete('/{id}', [DocumentController::class, 'destroy']);
         Route::post('/{id}/process', [DocumentController::class, 'process']);
+        Route::get('/{id}/preview', [DocumentController::class, 'preview']);
         Route::post('/{documentId}/summarize', [SummaryController::class, 'generate']);
         Route::get('/{documentId}/summary', [SummaryController::class, 'byDocument']);
     });

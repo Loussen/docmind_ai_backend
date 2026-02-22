@@ -205,6 +205,64 @@ class DocumentController extends Controller
         ]);
     }
 
+    public function preview(Request $request, string $id)
+    {
+        $device = $request->attributes->get('device');
+        $document = $device->documents()->findOrFail($id);
+
+        $filePath = Storage::disk('local')->path($document->file_path);
+
+        if (!file_exists($filePath)) {
+            return response()->json(['error' => 'File not found'], 404);
+        }
+
+        if (in_array($document->type, ['image', 'jpg', 'jpeg', 'png'])) {
+            return response()->file($filePath, [
+                'Content-Type' => $document->mime_type,
+                'Cache-Control' => 'public, max-age=86400',
+            ]);
+        }
+
+        if ($document->type === 'pdf' && extension_loaded('imagick')) {
+            $cacheDir = storage_path('app/previews/' . $device->device_id);
+            $cachePath = $cacheDir . '/' . $document->id . '.jpg';
+
+            if (file_exists($cachePath)) {
+                return response()->file($cachePath, [
+                    'Content-Type' => 'image/jpeg',
+                    'Cache-Control' => 'public, max-age=86400',
+                ]);
+            }
+
+            try {
+                if (!is_dir($cacheDir)) {
+                    mkdir($cacheDir, 0755, true);
+                }
+
+                $imagick = new \Imagick();
+                $imagick->setResolution(150, 150);
+                $imagick->readImage($filePath . '[0]');
+                $imagick->setImageFormat('jpg');
+                $imagick->setImageCompressionQuality(80);
+                $imagick->thumbnailImage(400, 0);
+                $imagick->writeImage($cachePath);
+                $imagick->destroy();
+
+                return response()->file($cachePath, [
+                    'Content-Type' => 'image/jpeg',
+                    'Cache-Control' => 'public, max-age=86400',
+                ]);
+            } catch (\Exception $e) {
+                \Log::warning('PDF preview generation failed: ' . $e->getMessage());
+            }
+        }
+
+        return response()->json([
+            'type' => $document->type,
+            'preview' => null,
+        ]);
+    }
+
     private function formatDocument(Document $document): array
     {
         return [
@@ -219,6 +277,7 @@ class DocumentController extends Controller
             'file_path' => $document->getFileUrl(),
             'extracted_text' => $document->extracted_text,
             'thumbnail_url' => $document->getThumbnailUrl(),
+            'preview_url' => url("/api/documents/{$document->id}/preview"),
             'summary_id' => $document->summary?->id,
             'error_message' => $document->error_message,
             'created_at' => $document->created_at->toISOString(),
