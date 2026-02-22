@@ -81,6 +81,8 @@ class DocumentController extends Controller
             ], 429);
         }
 
+        set_time_limit(120);
+
         $file = $request->file('document');
         $originalName = $file->getClientOriginalName();
         $extension = strtolower($file->getClientOriginalExtension());

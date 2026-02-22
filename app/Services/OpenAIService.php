@@ -12,9 +12,10 @@ class OpenAIService
     public function generateSummary(string $text, string $type = 'standard', string $language = 'en'): array
     {
         $prompt = $this->buildPrompt($text, $type, $language);
+        $model = config('docmind.openai.model', 'gpt-4o-mini');
 
         $response = OpenAI::chat()->create([
-            'model' => config('docmind.openai.model', 'gpt-4-turbo-preview'),
+            'model' => $model,
             'messages' => [
                 [
                     'role' => 'system',
@@ -26,7 +27,7 @@ class OpenAIService
                 ],
             ],
             'temperature' => config('docmind.openai.temperature', 0.3),
-            'max_tokens' => config('docmind.openai.max_tokens', 4096),
+            'max_tokens' => config('docmind.openai.max_tokens', 2048),
             'response_format' => ['type' => 'json_object'],
         ]);
 
@@ -40,13 +41,13 @@ class OpenAIService
      */
     private function getSystemPrompt(string $type): string
     {
-        $basePrompt = "You are an expert document analyst. You provide clear, structured summaries in JSON format.";
+        $base = "Expert document analyst. Return structured JSON summaries.";
         
         return match ($type) {
-            'contract' => $basePrompt . " You specialize in legal contracts and agreements. Pay special attention to obligations, deadlines, and potential risks.",
-            'academic' => $basePrompt . " You specialize in academic and research documents. Focus on methodology, findings, and conclusions.",
-            'business' => $basePrompt . " You specialize in business documents. Focus on key metrics, action items, and strategic insights.",
-            default => $basePrompt . " Provide comprehensive summaries for general documents.",
+            'contract' => $base . " Focus on obligations, deadlines, risks.",
+            'academic' => $base . " Focus on methodology, findings, conclusions.",
+            'business' => $base . " Focus on metrics, action items, strategy.",
+            default => $base,
         };
     }
 
@@ -55,55 +56,23 @@ class OpenAIService
      */
     private function buildPrompt(string $text, string $type, string $language): string
     {
-        $languageInstruction = $language !== 'en' 
-            ? "Provide your response in {$language} language." 
-            : "Provide your response in English.";
+        $lang = $language !== 'en' ? "Respond in {$language}." : "";
 
-        $typeSpecificInstructions = match ($type) {
-            'contract' => "
-- List all contractual obligations for each party
-- Identify key deadlines and dates
-- Highlight any risks, penalties, or liabilities
-- Note any termination clauses or conditions",
-            'academic' => "
-- Summarize the research methodology
-- List key findings and conclusions
-- Note any limitations mentioned
-- Highlight statistical significance if applicable",
-            'business' => "
-- Extract key business metrics and KPIs
-- Identify strategic recommendations
-- List action items with owners if mentioned
-- Note any financial figures or projections",
+        $extra = match ($type) {
+            'contract' => 'Include "obligations" and "risks" fields.',
+            'academic' => 'Include "findings" field.',
+            'business' => 'Include "important_facts" field with metrics.',
             default => "",
         };
 
         return <<<PROMPT
-Analyze the following document and provide a structured summary in JSON format.
+Summarize this document as JSON. {$lang}
 
-{$languageInstruction}
+JSON schema: {"title":"string max 100 chars","overview":"2-3 sentences","key_points":["3-7 items"],"action_items":["if any"],"keywords":["5-10"],"important_facts":"optional","obligations":"optional","risks":"optional","findings":"optional"}
 
-Your response must be a valid JSON object with the following structure:
-{
-    "title": "A concise title for the document (max 100 characters)",
-    "overview": "A comprehensive 2-3 sentence overview of the document",
-    "key_points": ["Array of 3-7 key points from the document"],
-    "action_items": ["Array of action items or next steps, if any"],
-    "keywords": ["Array of 5-10 relevant keywords"],
-    "important_facts": "String with important facts, numbers, or dates (optional)",
-    "obligations": "String with obligations if this is a contract (optional)",
-    "risks": "String with risks or concerns if applicable (optional)",
-    "findings": "String with research findings if this is academic (optional)"
-}
+{$extra}
 
-Instructions:
-- Be concise but comprehensive
-- Extract the most important information
-- Use clear, professional language
-- Ensure all arrays have at least one item
-{$typeSpecificInstructions}
-
-Document Text:
+Text:
 {$text}
 PROMPT;
     }

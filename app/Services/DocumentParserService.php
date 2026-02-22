@@ -291,8 +291,7 @@ class DocumentParserService
         // Trim and normalize line breaks
         $text = trim($text);
         
-        // Limit text length to prevent token overflow
-        $maxLength = 50000;
+        $maxLength = 15000;
         if (strlen($text) > $maxLength) {
             $text = substr($text, 0, $maxLength) . '... [Content truncated]';
         }

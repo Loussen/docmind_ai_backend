@@ -80,6 +80,7 @@ class SummaryController extends Controller
             ]);
         }
 
+        set_time_limit(120);
         $startTime = microtime(true);
 
         try {
