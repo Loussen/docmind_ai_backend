@@ -10,16 +10,32 @@ class SummaryFormatterService
     public function format(array $data): array
     {
         return [
-            'title' => $this->formatTitle($data['title'] ?? 'Untitled Document'),
-            'overview' => $this->formatOverview($data['overview'] ?? ''),
-            'key_points' => $this->formatKeyPoints($data['key_points'] ?? []),
-            'action_items' => $this->formatActionItems($data['action_items'] ?? []),
-            'keywords' => $this->formatKeywords($data['keywords'] ?? []),
+            'title' => $this->formatTitle($this->toString($data['title'] ?? 'Untitled Document')),
+            'overview' => $this->formatOverview($this->toString($data['overview'] ?? '')),
+            'key_points' => $this->formatKeyPoints($this->toArray($data['key_points'] ?? [])),
+            'action_items' => $this->formatActionItems($this->toArray($data['action_items'] ?? [])),
+            'keywords' => $this->formatKeywords($this->toArray($data['keywords'] ?? [])),
             'important_facts' => $this->formatOptionalField($data['important_facts'] ?? null),
             'obligations' => $this->formatOptionalField($data['obligations'] ?? null),
             'risks' => $this->formatOptionalField($data['risks'] ?? null),
             'findings' => $this->formatOptionalField($data['findings'] ?? null),
         ];
+    }
+
+    private function toString(mixed $value): string
+    {
+        if (is_array($value)) {
+            return implode(' ', array_map(fn($v) => is_string($v) ? $v : json_encode($v), $value));
+        }
+        return (string) $value;
+    }
+
+    private function toArray(mixed $value): array
+    {
+        if (is_string($value)) {
+            return array_filter(array_map('trim', explode("\n", $value)));
+        }
+        return is_array($value) ? $value : [];
     }
 
     /**
@@ -125,13 +141,17 @@ class SummaryFormatterService
     /**
      * Format optional text field
      */
-    private function formatOptionalField(?string $value): ?string
+    private function formatOptionalField(mixed $value): ?string
     {
         if (empty($value)) {
             return null;
         }
 
-        $value = trim($value);
+        if (is_array($value)) {
+            $value = implode("\n", array_map(fn($item) => is_string($item) ? trim($item) : json_encode($item), $value));
+        }
+
+        $value = trim((string) $value);
         
         if (strlen($value) > 5000) {
             $value = substr($value, 0, 4997) . '...';
