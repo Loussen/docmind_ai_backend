@@ -263,6 +263,29 @@ class DocumentController extends Controller
         ]);
     }
 
+    /**
+     * Serve the original document file (PDF, DOC, image) for in-app viewing.
+     */
+    public function file(Request $request, string $id)
+    {
+        $device = $request->attributes->get('device');
+        $document = $device->documents()->findOrFail($id);
+
+        $filePath = Storage::disk('local')->path($document->file_path);
+
+        if (!file_exists($filePath)) {
+            return response()->json(['error' => 'File not found'], 404);
+        }
+
+        $mimeType = $document->mime_type ?: 'application/octet-stream';
+
+        return response()->file($filePath, [
+            'Content-Type' => $mimeType,
+            'Content-Disposition' => 'inline; filename="' . basename($document->original_name) . '"',
+            'Cache-Control' => 'private, max-age=3600',
+        ]);
+    }
+
     private function formatDocument(Document $document): array
     {
         return [
@@ -278,6 +301,7 @@ class DocumentController extends Controller
             'extracted_text' => $document->extracted_text,
             'thumbnail_url' => $document->getThumbnailUrl(),
             'preview_url' => url("/api/documents/{$document->id}/preview"),
+            'file_url' => url("/api/documents/{$document->id}/file"),
             'summary_id' => $document->summary?->id,
             'error_message' => $document->error_message,
             'created_at' => $document->created_at->toISOString(),
