@@ -68,11 +68,16 @@ class DocumentController extends Controller
 
     public function store(Request $request): JsonResponse
     {
-        $request->validate([
-            'document' => 'required|file|mimes:pdf,docx,doc,jpg,jpeg,png|max:10240',
-        ]);
-
         $device = $request->attributes->get('device');
+        $plan = $device->getSubscriptionPlan();
+        $maxFileSizeMb = config("docmind.plans.{$plan}.max_file_size_mb", config('docmind.plans.free.max_file_size_mb', 10));
+        $maxFileSizeKb = $maxFileSizeMb * 1024;
+
+        $request->validate([
+            'document' => "required|file|mimes:pdf,docx,doc,jpg,jpeg,png|max:{$maxFileSizeKb}",
+        ], [
+            'document.max' => "The document must not exceed {$maxFileSizeMb}MB for your plan.",
+        ]);
 
         if (!$device->canUploadDocument()) {
             return response()->json([

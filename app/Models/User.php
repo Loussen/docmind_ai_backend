@@ -63,24 +63,24 @@ class User extends Authenticatable
     public function isPremium(): bool
     {
         $subscription = $this->subscription;
-        
+
         if (!$subscription) {
             return false;
         }
-        
-        return $subscription->status === 'active' && 
+
+        return $subscription->isActive() &&
                in_array($subscription->plan, ['pro', 'pro_plus']);
     }
 
     public function isProPlus(): bool
     {
         $subscription = $this->subscription;
-        
+
         if (!$subscription) {
             return false;
         }
-        
-        return $subscription->status === 'active' && 
+
+        return $subscription->isActive() &&
                $subscription->plan === 'pro_plus';
     }
 

@@ -46,6 +46,7 @@ return [
             'name' => 'Free',
             'docs_total' => 2,
             'pages_per_doc' => 5,
+            'max_file_size_mb' => 10,
             'price_monthly' => 0,
             'price_yearly' => 0,
             'features' => [
@@ -58,6 +59,7 @@ return [
             'name' => 'Pro',
             'docs_per_day' => -1, // Unlimited
             'pages_per_doc' => -1, // Unlimited
+            'max_file_size_mb' => 50,
             'price_monthly' => 4.99,
             'price_yearly' => 35.99,
             'apple_product_monthly' => 'com.docmind.pro.monthly',
@@ -74,6 +76,7 @@ return [
             'name' => 'Pro+',
             'docs_per_day' => -1, // Unlimited
             'pages_per_doc' => -1, // Unlimited
+            'max_file_size_mb' => 100,
             'price_monthly' => 9.99,
             'price_yearly' => 71.99,
             'apple_product_monthly' => 'com.docmind.proplus.monthly',
