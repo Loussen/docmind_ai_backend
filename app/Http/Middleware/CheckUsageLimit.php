@@ -27,11 +27,12 @@ class CheckUsageLimit
         }
 
         if (!$device->canUploadDocument()) {
+            $dailyLimit = config('docmind.plans.free.docs_per_day', 2);
             return response()->json([
                 'error' => 'Free limit reached',
-                'message' => 'You have used your 2 free documents. Upgrade to Pro for unlimited access.',
-                'free_limit' => 2,
-                'total_used' => $device->getTotalUsageCount(),
+                'message' => "You have used your {$dailyLimit} free documents for today. Upgrade to Pro for unlimited access.",
+                'free_limit' => $dailyLimit,
+                'total_used' => $device->getDailyUsageCount(),
             ], 429);
         }
 

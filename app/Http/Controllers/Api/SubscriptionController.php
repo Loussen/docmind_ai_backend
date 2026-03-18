@@ -240,8 +240,8 @@ class SubscriptionController extends Controller
     {
         $device = $request->attributes->get('device');
 
-        $totalUsed = $device->getTotalUsageCount();
-        $freeLimit = 2;
+        $totalUsed = $device->getDailyUsageCount();
+        $freeLimit = config('docmind.plans.free.docs_per_day', 2);
         $totalDocs = $device->documents()->count();
         $totalSummaries = $device->summaries()->count();
 

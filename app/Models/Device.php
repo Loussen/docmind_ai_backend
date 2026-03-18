@@ -16,7 +16,19 @@ class Device extends Model
         'platform',
         'model',
         'os_version',
+        'notifications_enabled',
+        'dark_mode_enabled',
+        'ui_language',
+        'output_language',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'notifications_enabled' => 'boolean',
+            'dark_mode_enabled' => 'boolean',
+        ];
+    }
 
     public function documents(): HasMany
     {
@@ -61,10 +73,19 @@ class Device extends Model
             ->count();
     }
 
+    public function getDailyUsageCount(): int
+    {
+        return $this->usageLogs()
+            ->where('action', 'upload')
+            ->whereDate('usage_date', today())
+            ->count();
+    }
+
     public function canUploadDocument(): bool
     {
         if ($this->isPremium()) return true;
-        return $this->getTotalUsageCount() < 2;
+        $dailyLimit = config('docmind.plans.free.docs_per_day', 2);
+        return $this->getDailyUsageCount() < $dailyLimit;
     }
 
     public function getSubscriptionPlan(): string

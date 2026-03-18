@@ -147,6 +147,58 @@ class SummaryController extends Controller
         ]);
     }
 
+    public function translate(Request $request, string $id): JsonResponse
+    {
+        $device = $request->attributes->get('device');
+
+        if (!$device->isPremium()) {
+            return response()->json([
+                'error' => 'Upgrade required',
+                'message' => 'Translation is available on Pro plans. Upgrade to translate summaries.',
+            ], 403);
+        }
+
+        $validated = $request->validate([
+            'target_language' => 'required|string|max:10',
+        ]);
+
+        $summary = $device->summaries()->findOrFail($id);
+
+        try {
+            $translated = $this->openAI->translateSummary([
+                'title' => $summary->title,
+                'overview' => $summary->overview,
+                'key_points' => $summary->key_points ?? [],
+                'action_items' => $summary->action_items ?? [],
+                'keywords' => $summary->keywords ?? [],
+                'important_facts' => $summary->important_facts,
+                'obligations' => $summary->obligations,
+                'risks' => $summary->risks,
+                'findings' => $summary->findings,
+            ], $validated['target_language']);
+
+            return response()->json([
+                'summary' => array_merge($this->formatSummary($summary), [
+                    'title' => $translated['title'] ?? $summary->title,
+                    'overview' => $translated['overview'] ?? $summary->overview,
+                    'key_points' => $translated['key_points'] ?? ($summary->key_points ?? []),
+                    'action_items' => $translated['action_items'] ?? ($summary->action_items ?? []),
+                    'keywords' => $translated['keywords'] ?? ($summary->keywords ?? []),
+                    'important_facts' => $translated['important_facts'] ?? $summary->important_facts,
+                    'obligations' => $translated['obligations'] ?? $summary->obligations,
+                    'risks' => $translated['risks'] ?? $summary->risks,
+                    'findings' => $translated['findings'] ?? $summary->findings,
+                    'language' => $validated['target_language'],
+                ]),
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Translation failed',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
     private function formatSummary(Summary $summary): array
     {
         return [
@@ -164,6 +216,7 @@ class SummaryController extends Controller
             'findings' => $summary->findings,
             'word_count' => $summary->word_count,
             'processing_time_ms' => $summary->processing_time_ms,
+            'language' => $summary->language,
             'created_at' => $summary->created_at->toISOString(),
             'updated_at' => $summary->updated_at->toISOString(),
         ];

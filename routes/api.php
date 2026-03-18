@@ -55,6 +55,7 @@ Route::middleware('device.auth')->group(function () {
     Route::prefix('summaries')->group(function () {
         Route::get('/', [SummaryController::class, 'index']);
         Route::get('/{id}', [SummaryController::class, 'show']);
+        Route::post('/{id}/translate', [SummaryController::class, 'translate']);
     });
 
     // Subscription

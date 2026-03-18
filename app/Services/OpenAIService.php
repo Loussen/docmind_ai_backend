@@ -37,6 +37,58 @@ class OpenAIService
     }
 
     /**
+     * Translate an existing summary JSON into target language.
+     * Keeps the same schema and returns JSON object.
+     */
+    public function translateSummary(array $summary, string $targetLanguage): array
+    {
+        $model = config('docmind.openai.model', 'gpt-4o-mini');
+
+        $payload = json_encode([
+            'title' => $summary['title'] ?? '',
+            'overview' => $summary['overview'] ?? '',
+            'key_points' => $summary['key_points'] ?? [],
+            'action_items' => $summary['action_items'] ?? [],
+            'keywords' => $summary['keywords'] ?? [],
+            'important_facts' => $summary['important_facts'] ?? null,
+            'obligations' => $summary['obligations'] ?? null,
+            'risks' => $summary['risks'] ?? null,
+            'findings' => $summary['findings'] ?? null,
+        ], JSON_UNESCAPED_UNICODE);
+
+        $prompt = <<<PROMPT
+Translate the following JSON summary into {$targetLanguage}.
+Keep the same JSON keys and structure. Translate text values only.
+Return JSON only.
+
+JSON schema: {"title":"string","overview":"string","key_points":["string"],"action_items":["string"],"keywords":["string"],"important_facts":"string|null","obligations":"string|null","risks":"string|null","findings":"string|null"}
+
+Input JSON:
+{$payload}
+PROMPT;
+
+        $response = OpenAI::chat()->create([
+            'model' => $model,
+            'messages' => [
+                [
+                    'role' => 'system',
+                    'content' => 'You are a professional translator. Return valid JSON only.',
+                ],
+                [
+                    'role' => 'user',
+                    'content' => $prompt,
+                ],
+            ],
+            'temperature' => 0.2,
+            'max_tokens' => config('docmind.openai.max_tokens', 2048),
+            'response_format' => ['type' => 'json_object'],
+        ]);
+
+        $content = $response->choices[0]->message->content;
+        return json_decode($content, true) ?? [];
+    }
+
+    /**
      * Get the system prompt based on document type
      */
     private function getSystemPrompt(string $type): string
