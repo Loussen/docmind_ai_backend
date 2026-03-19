@@ -56,8 +56,10 @@ class OpenAIService
             'findings' => $summary['findings'] ?? null,
         ], JSON_UNESCAPED_UNICODE);
 
+        $targetLangName = $this->resolveLanguageName($targetLanguage);
+
         $prompt = <<<PROMPT
-Translate the following JSON summary into {$targetLanguage}.
+Translate the following JSON summary into {$targetLangName}.
 Keep the same JSON keys and structure. Translate text values only.
 Return JSON only.
 
@@ -108,7 +110,8 @@ PROMPT;
      */
     private function buildPrompt(string $text, string $type, string $language): string
     {
-        $lang = $language !== 'en' ? "Respond in {$language}." : "";
+        $langName = $this->resolveLanguageName($language);
+        $lang = $language !== 'en' ? "You MUST respond entirely in {$langName}. All text values in the JSON must be written in {$langName}." : "";
 
         $extra = match ($type) {
             'contract' => 'Include "obligations" and "risks" fields.',
@@ -127,6 +130,26 @@ JSON schema: {"title":"string max 100 chars","overview":"2-3 sentences","key_poi
 Text:
 {$text}
 PROMPT;
+    }
+
+    private function resolveLanguageName(string $code): string
+    {
+        return match ($code) {
+            'en' => 'English',
+            'es' => 'Spanish',
+            'fr' => 'French',
+            'de' => 'German',
+            'it' => 'Italian',
+            'pt' => 'Portuguese',
+            'ru' => 'Russian',
+            'tr' => 'Turkish',
+            'ja' => 'Japanese',
+            'zh-Hans' => 'Simplified Chinese',
+            'zh-Hant' => 'Traditional Chinese',
+            'nl' => 'Dutch',
+            'id' => 'Indonesian',
+            default => $code,
+        };
     }
 
     /**
