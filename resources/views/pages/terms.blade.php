@@ -100,6 +100,33 @@
             <li>Priority processing</li>
             <li>Advanced features</li>
         </ul>
+
+        <h3>4.2.1 Auto‑Renewable Subscription Details</h3>
+        <p>
+            Our Pro and Pro+ plans are <strong>auto-renewable subscriptions</strong>. Each subscription
+            renews automatically for the same period unless you cancel before the renewal date.
+        </p>
+
+        <p><strong>Subscription lengths</strong>:</p>
+        <ul>
+            <li><strong>Pro (Monthly)</strong> — renews every month</li>
+            <li><strong>Pro (Yearly)</strong> — renews every year</li>
+            <li><strong>Pro+ (Monthly)</strong> — renews every month</li>
+            <li><strong>Pro+ (Yearly)</strong> — renews every year</li>
+        </ul>
+
+        <p><strong>Prices</strong> (example in USD; exact price may vary by country and currency shown in the App Store):</p>
+        <ul>
+            <li><strong>Pro (Monthly)</strong> — $4.99 per month</li>
+            <li><strong>Pro (Yearly)</strong> — $35.99 per year</li>
+            <li><strong>Pro+ (Monthly)</strong> — $9.99 per month</li>
+            <li><strong>Pro+ (Yearly)</strong> — $71.99 per year</li>
+        </ul>
+
+        <p>
+            You will always be charged the <strong>price shown in the Apple App Store</strong> for your
+            region at the time of purchase and renewal.
+        </p>
         
         <h3>4.3 Billing</h3>
         <p>Premium subscriptions are billed through Apple's App Store:</p>
