@@ -6,15 +6,17 @@ use OpenAI\Laravel\Facades\OpenAI;
 
 class OpenAIService
 {
+    private const DEFAULT_MODEL = 'gpt-4o-mini';
+
     /**
      * Generate a summary for the given text
      */
     public function generateSummary(string $text, string $type = 'standard', string $language = 'en'): array
     {
         $prompt = $this->buildPrompt($text, $type, $language);
-        $model = config('docmind.openai.model', 'gpt-4o-mini');
+        $model = config('docmind.openai.model', self::DEFAULT_MODEL);
 
-        $response = OpenAI::chat()->create([
+        $response = $this->createChatCompletionWithModelFallback([
             'model' => $model,
             'messages' => [
                 [
@@ -42,7 +44,7 @@ class OpenAIService
      */
     public function translateSummary(array $summary, string $targetLanguage): array
     {
-        $model = config('docmind.openai.model', 'gpt-4o-mini');
+        $model = config('docmind.openai.model', self::DEFAULT_MODEL);
 
         $payload = json_encode([
             'title' => $summary['title'] ?? '',
@@ -69,7 +71,7 @@ Input JSON:
 {$payload}
 PROMPT;
 
-        $response = OpenAI::chat()->create([
+        $response = $this->createChatCompletionWithModelFallback([
             'model' => $model,
             'messages' => [
                 [
@@ -174,6 +176,37 @@ PROMPT;
                 ->toArray();
         } catch (\Exception $e) {
             return [];
+        }
+    }
+
+    private function createChatCompletionWithModelFallback(array $payload): mixed
+    {
+        try {
+            return OpenAI::chat()->create($payload);
+        } catch (\Throwable $e) {
+            $message = strtolower($e->getMessage());
+            $isModelError = str_contains($message, 'model') &&
+                (str_contains($message, 'does not exist') || str_contains($message, 'do not have access'));
+
+            if (!$isModelError) {
+                throw $e;
+            }
+
+            $fallbackModel = config('docmind.openai.fallback_model', self::DEFAULT_MODEL);
+            $requestedModel = $payload['model'] ?? null;
+
+            if (!$fallbackModel || $fallbackModel === $requestedModel) {
+                throw $e;
+            }
+
+            $payload['model'] = $fallbackModel;
+            \Log::warning('Primary OpenAI model failed, retrying with fallback model.', [
+                'requested_model' => $requestedModel,
+                'fallback_model' => $fallbackModel,
+                'error' => $e->getMessage(),
+            ]);
+
+            return OpenAI::chat()->create($payload);
         }
     }
 }
