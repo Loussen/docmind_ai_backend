@@ -338,23 +338,7 @@
         </div>
         <div class="articles-grid articles-grid-compact">
             @foreach ($recentArticles as $article)
-            <article class="article-card">
-                <div class="article-card-meta">
-                    <time datetime="{{ $article['published_at'] }}">{{ \Carbon\Carbon::parse($article['published_at'])->format('M j, Y') }}</time>
-                    <span aria-hidden="true">&middot;</span>
-                    <span>{{ $article['reading_time'] }} min read</span>
-                </div>
-                <h3>
-                    <a href="{{ route('articles.show', $article['slug']) }}">{{ $article['title'] }}</a>
-                </h3>
-                <p>{{ $article['excerpt'] }}</p>
-                <a href="{{ route('articles.show', $article['slug']) }}" class="article-read-more">
-                    Read article
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <path d="M5 12h14M12 5l7 7-7 7"/>
-                    </svg>
-                </a>
-            </article>
+                @include('partials.article-card', ['article' => $article])
             @endforeach
         </div>
         <div class="articles-preview-cta">

@@ -80,6 +80,9 @@
                 <span aria-hidden="true">/</span>
                 <a href="{{ route('articles.index') }}">Articles</a>
             </nav>
+            @if(!empty($article['category']))
+            <span class="article-tag article-tag--hero">{{ $article['category'] }}</span>
+            @endif
             <h1 itemprop="headline">{{ $article['title'] }}</h1>
             <div class="article-meta">
                 <time datetime="{{ $article['published_at'] }}" itemprop="datePublished">{{ \Carbon\Carbon::parse($article['published_at'])->format('F j, Y') }}</time>

@@ -55,7 +55,14 @@
 @endsection
 
 @section('content')
-<section class="legal-hero">
+@php
+    $featured = $articles->first();
+    $rest = $articles->skip(1);
+    $featuredCategory = $featured['category'] ?? 'Guides';
+    $featuredCategorySlug = \Illuminate\Support\Str::slug($featuredCategory);
+@endphp
+
+<section class="legal-hero articles-hero">
     <div class="container">
         <h1>Articles &amp; Guides</h1>
         <p>Tips on AI document summarization, productivity, and getting more from your PDFs and images.</p>
@@ -64,27 +71,41 @@
 
 <section class="articles-content" aria-label="Article list">
     <div class="container">
-        <div class="articles-grid">
-            @foreach ($articles as $article)
-            <article class="article-card">
-                <div class="article-card-meta">
-                    <time datetime="{{ $article['published_at'] }}">{{ \Carbon\Carbon::parse($article['published_at'])->format('M j, Y') }}</time>
-                    <span aria-hidden="true">&middot;</span>
-                    <span>{{ $article['reading_time'] }} min read</span>
+        @if ($featured)
+        <article class="article-featured">
+            <a href="{{ route('articles.show', $featured['slug']) }}" class="article-featured-link">
+                <div class="article-featured-visual article-card-visual--{{ $featuredCategorySlug }}">
+                    <span class="article-tag article-tag--light">Featured &middot; {{ $featuredCategory }}</span>
+                    <div class="article-card-icon article-card-icon--large" aria-hidden="true">
+                        @include('partials.article-icon', ['category' => $featuredCategorySlug])
+                    </div>
                 </div>
-                <h2>
-                    <a href="{{ route('articles.show', $article['slug']) }}">{{ $article['title'] }}</a>
-                </h2>
-                <p>{{ $article['excerpt'] }}</p>
-                <a href="{{ route('articles.show', $article['slug']) }}" class="article-read-more">
-                    Read article
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <path d="M5 12h14M12 5l7 7-7 7"/>
-                    </svg>
-                </a>
-            </article>
+                <div class="article-featured-body">
+                    <div class="article-card-meta">
+                        <time datetime="{{ $featured['published_at'] }}">{{ \Carbon\Carbon::parse($featured['published_at'])->format('M j, Y') }}</time>
+                        <span aria-hidden="true">&middot;</span>
+                        <span>{{ $featured['reading_time'] }} min read</span>
+                    </div>
+                    <h2 class="article-title article-title--featured">{{ $featured['title'] }}</h2>
+                    <p>{{ $featured['excerpt'] }}</p>
+                    <span class="article-read-more">
+                        Read article
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </span>
+                </div>
+            </a>
+        </article>
+        @endif
+
+        @if ($rest->isNotEmpty())
+        <div class="articles-grid">
+            @foreach ($rest as $article)
+                @include('partials.article-card', ['article' => $article])
             @endforeach
         </div>
+        @endif
     </div>
 </section>
 

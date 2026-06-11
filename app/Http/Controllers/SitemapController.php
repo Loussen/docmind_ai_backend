@@ -13,7 +13,7 @@ class SitemapController extends Controller
 
         $staticPages = [
             ['loc' => $baseUrl . '/', 'lastmod' => '2026-06-01', 'changefreq' => 'weekly', 'priority' => '1.0'],
-            ['loc' => $baseUrl . '/articles', 'lastmod' => '2026-06-05', 'changefreq' => 'weekly', 'priority' => '0.9'],
+            ['loc' => $baseUrl . '/articles', 'lastmod' => '2026-06-10', 'changefreq' => 'weekly', 'priority' => '0.9'],
             ['loc' => $baseUrl . '/support', 'lastmod' => '2026-02-09', 'changefreq' => 'monthly', 'priority' => '0.8'],
             ['loc' => $baseUrl . '/privacy', 'lastmod' => '2026-02-09', 'changefreq' => 'yearly', 'priority' => '0.5'],
             ['loc' => $baseUrl . '/terms', 'lastmod' => '2026-02-09', 'changefreq' => 'yearly', 'priority' => '0.5'],
