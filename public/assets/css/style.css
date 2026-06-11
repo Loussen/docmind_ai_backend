@@ -1034,7 +1034,21 @@ p {
 .article-featured-visual {
     height: 100%;
     min-height: 280px;
-    align-items: flex-start;
+    align-items: flex-end;
+}
+
+.article-label-featured {
+    display: inline-block;
+    width: fit-content;
+    padding: 0.25rem 0.75rem;
+    margin-bottom: var(--spacing-sm);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 999px;
+    background: rgba(92, 107, 192, 0.12);
+    color: var(--primary);
 }
 
 .article-featured-body {

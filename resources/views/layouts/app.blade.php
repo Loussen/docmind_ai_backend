@@ -48,7 +48,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Styles -->
-    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}?v=20260611">
+    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}?v=20260611b">
     
     <!-- JSON-LD Structured Data -->
     @yield('structured_data')

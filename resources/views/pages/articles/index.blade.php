@@ -75,12 +75,13 @@
         <article class="article-featured">
             <a href="{{ route('articles.show', $featured['slug']) }}" class="article-featured-link">
                 <div class="article-featured-visual article-card-visual--{{ $featuredCategorySlug }}">
-                    <span class="article-tag article-tag--light">Featured &middot; {{ $featuredCategory }}</span>
+                    <span class="article-tag article-tag--light">{{ $featuredCategory }}</span>
                     <div class="article-card-icon article-card-icon--large" aria-hidden="true">
                         @include('partials.article-icon', ['category' => $featuredCategorySlug])
                     </div>
                 </div>
                 <div class="article-featured-body">
+                    <span class="article-label-featured">Featured</span>
                     <div class="article-card-meta">
                         <time datetime="{{ $featured['published_at'] }}">{{ \Carbon\Carbon::parse($featured['published_at'])->format('M j, Y') }}</time>
                         <span aria-hidden="true">&middot;</span>
