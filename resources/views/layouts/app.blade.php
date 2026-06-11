@@ -26,6 +26,7 @@
     @stack('head')
     
     <link rel="alternate" type="application/rss+xml" title="DoCMind AI Articles" href="{{ route('feed') }}">
+    <link rel="alternate" type="text/plain" title="LLM context" href="{{ route('llms') }}">
     
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">

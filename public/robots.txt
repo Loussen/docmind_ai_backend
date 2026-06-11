@@ -7,3 +7,6 @@ Disallow: /vendor/
 
 # Sitemaps & feeds
 Sitemap: https://docsmind.app/sitemap.xml
+
+# LLM context (llms.txt spec: https://llmstxt.org)
+# https://docsmind.app/llms.txt

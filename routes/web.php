@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\FeedController;
+use App\Http\Controllers\LlmsTxtController;
 use App\Http\Controllers\SitemapController;
 use App\Support\ArticleRepository;
 use Illuminate\Support\Facades\Route;
@@ -35,3 +36,4 @@ Route::get('/support', function () {
 
 Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 Route::get('/feed.xml', FeedController::class)->name('feed');
+Route::get('/llms.txt', LlmsTxtController::class)->name('llms');
