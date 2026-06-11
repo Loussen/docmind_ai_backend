@@ -99,7 +99,7 @@
             <div class="article-cta-box">
                 <h2>Ready to summarize your documents?</h2>
                 <p>Download DoCMind AI free on the App Store — upload PDFs, Word docs, and images for instant AI summaries.</p>
-                <a href="https://apps.apple.com/app/id6757693350" class="btn btn-primary" target="_blank" rel="noopener">Get DoCMind AI Free</a>
+                <a href="https://apps.apple.com/app/id6757693350" class="btn btn-primary" style="color: #fff;" target="_blank" rel="noopener">Get DoCMind AI Free</a>
             </div>
         </div>
     </section>
