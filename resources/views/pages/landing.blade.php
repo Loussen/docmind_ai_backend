@@ -328,6 +328,42 @@
     </div>
 </section>
 
+@if(isset($recentArticles) && $recentArticles->isNotEmpty())
+<!-- Articles Section -->
+<section class="articles-preview" id="articles" aria-labelledby="articles-preview-heading">
+    <div class="container">
+        <div class="section-header">
+            <h2 id="articles-preview-heading">From Our Articles</h2>
+            <p>Guides on AI document summarization, study tips, and productivity workflows.</p>
+        </div>
+        <div class="articles-grid articles-grid-compact">
+            @foreach ($recentArticles as $article)
+            <article class="article-card">
+                <div class="article-card-meta">
+                    <time datetime="{{ $article['published_at'] }}">{{ \Carbon\Carbon::parse($article['published_at'])->format('M j, Y') }}</time>
+                    <span aria-hidden="true">&middot;</span>
+                    <span>{{ $article['reading_time'] }} min read</span>
+                </div>
+                <h3>
+                    <a href="{{ route('articles.show', $article['slug']) }}">{{ $article['title'] }}</a>
+                </h3>
+                <p>{{ $article['excerpt'] }}</p>
+                <a href="{{ route('articles.show', $article['slug']) }}" class="article-read-more">
+                    Read article
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </article>
+            @endforeach
+        </div>
+        <div class="articles-preview-cta">
+            <a href="{{ route('articles.index') }}" class="btn btn-secondary">View All Articles</a>
+        </div>
+    </div>
+</section>
+@endif
+
 <!-- CTA Section -->
 <section class="cta" aria-labelledby="cta-heading">
     <div class="container">

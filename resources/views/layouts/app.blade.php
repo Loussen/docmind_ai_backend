@@ -18,10 +18,14 @@
     <meta property="og:image" content="{{ asset('assets/images/og-image.png') }}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:type" content="website">
+    <meta property="og:type" content="@yield('og_type', 'website')">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:site_name" content="DoCMind AI">
     <meta property="og:locale" content="en_US">
+    
+    @stack('head')
+    
+    <link rel="alternate" type="application/rss+xml" title="DoCMind AI Articles" href="{{ route('feed') }}">
     
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
@@ -63,6 +67,7 @@
             <ul class="nav-links">
                 <li><a href="{{ route('home') }}#features">Features</a></li>
                 <li><a href="{{ route('home') }}#pricing">Pricing</a></li>
+                <li><a href="{{ route('articles.index') }}">Articles</a></li>
                 <li><a href="{{ route('support') }}">Support</a></li>
             </ul>
             
@@ -95,6 +100,14 @@
                         <li><a href="{{ route('home') }}#features">Features</a></li>
                         <li><a href="{{ route('home') }}#pricing">Pricing</a></li>
                         <li><a href="{{ route('support') }}">Support</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="{{ route('articles.index') }}">Articles</a></li>
+                        <li><a href="{{ route('feed') }}">RSS Feed</a></li>
                     </ul>
                 </div>
                 
