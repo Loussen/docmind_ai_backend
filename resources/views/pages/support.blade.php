@@ -39,7 +39,7 @@
             "name": "Is my data secure?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Yes, all data is encrypted in transit and at rest. Documents are processed securely and not shared with third parties. We use secure authentication including Sign in with Apple. You can delete your data at any time."
+                "text": "Yes, all data is encrypted in transit and at rest. Documents are processed securely for AI summarization. Document content is not shared with advertisers. You can delete all your data anytime via Settings → Delete Account."
             }
         },
         {
@@ -68,10 +68,10 @@
         },
         {
             "@type": "Question",
-            "name": "How do I delete my account?",
+            "name": "How do I delete my data?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Open DoCMind AI, go to Settings, scroll down and tap Delete Account, then confirm the deletion. This action is permanent and cannot be undone. All your documents and summaries will be deleted."
+                "text": "Open DoCMind AI, go to Settings, tap Delete Account, then confirm. This permanently removes all documents, summaries, and usage data linked to your device. No login is required."
             }
         }
     ]
@@ -181,9 +181,10 @@
                         <p>Yes, we take data security seriously:</p>
                         <ul>
                             <li>All data is encrypted in transit and at rest</li>
-                            <li>Documents are processed securely and not shared with third parties</li>
-                            <li>We use secure authentication (including Sign in with Apple)</li>
-                            <li>You can delete your data at any time</li>
+                            <li>Documents are processed securely for AI summarization only</li>
+                            <li>Document content is not shared with advertisers</li>
+                            <li>No login or email required — identified by device ID only</li>
+                            <li>You can delete all your data anytime via Settings → Delete Account</li>
                         </ul>
                         <p>For more details, please read our <a href="{{ route('privacy') }}">Privacy Policy</a>.</p>
                     </div>
@@ -249,18 +250,18 @@
                 
                 <div class="faq-item">
                     <div class="faq-question" onclick="this.parentElement.classList.toggle('active')">
-                        <span>How do I delete my account?</span>
+                        <span>How do I delete my data?</span>
                         <span>+</span>
                     </div>
                     <div class="faq-answer">
-                        <p>To delete your account and all associated data:</p>
+                        <p>To delete all your data from our servers:</p>
                         <ol>
                             <li>Open DoCMind AI</li>
                             <li>Go to Settings</li>
-                            <li>Scroll down and tap "Delete Account"</li>
+                            <li>Tap "Delete Account"</li>
                             <li>Confirm the deletion</li>
                         </ol>
-                        <p>Note: This action is permanent and cannot be undone. All your documents and summaries will be deleted.</p>
+                        <p>No login is required. This permanently removes all documents, summaries, and usage data linked to your device. This action cannot be undone.</p>
                     </div>
                 </div>
                 

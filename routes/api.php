@@ -30,6 +30,7 @@ Route::middleware('device.auth')->group(function () {
 
     // Device
     Route::get('/device/sync', [DeviceController::class, 'sync']);
+    Route::delete('/device/data', [DeviceController::class, 'destroyData']);
 
     // User/Device usage & settings
     Route::prefix('user')->group(function () {

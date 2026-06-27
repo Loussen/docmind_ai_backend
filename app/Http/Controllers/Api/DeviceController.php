@@ -7,6 +7,7 @@ use App\Models\Device;
 use App\Models\Subscription;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class DeviceController extends Controller
 {
@@ -75,6 +76,38 @@ class DeviceController extends Controller
                 'free_limit' => 2,
                 'created_at' => $device->created_at->toISOString(),
             ],
+        ]);
+    }
+
+    public function destroyData(Request $request): JsonResponse
+    {
+        $device = $request->attributes->get('device');
+
+        foreach ($device->documents as $document) {
+            if ($document->file_path) {
+                Storage::disk('local')->delete($document->file_path);
+            }
+            if ($document->thumbnail_path) {
+                Storage::disk('local')->delete($document->thumbnail_path);
+            }
+            if ($document->summary) {
+                $document->summary->delete();
+            }
+            $document->delete();
+        }
+
+        $device->usageLogs()->delete();
+
+        $device->update([
+            'notifications_enabled' => true,
+            'dark_mode_enabled' => false,
+            'ui_language' => 'en',
+            'output_language' => 'en',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'All app data deleted successfully',
         ]);
     }
 }

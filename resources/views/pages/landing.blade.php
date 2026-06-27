@@ -28,13 +28,6 @@
             "priceValidUntil": "{{ date('Y-12-31') }}"
         }
     ],
-    "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.8",
-        "ratingCount": "50",
-        "bestRating": "5",
-        "worstRating": "1"
-    },
     "downloadUrl": "https://apps.apple.com/app/id6757693350",
     "softwareVersion": "1.0",
     "screenshot": "{{ asset('assets/images/og-image.png') }}",
