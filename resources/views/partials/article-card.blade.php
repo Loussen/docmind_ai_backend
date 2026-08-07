@@ -2,12 +2,16 @@
     $category = $article['category'] ?? 'Guides';
     $categorySlug = \Illuminate\Support\Str::slug($category);
     $cover = !empty($article['image']) ? asset($article['image']) : null;
+    $visualClass = 'article-card-visual article-card-visual--' . $categorySlug;
+    if ($cover) {
+        $visualClass .= ' article-card-visual--photo';
+    }
 @endphp
 
 <article class="article-card">
     <a href="{{ route('articles.show', $article['slug']) }}" class="article-card-link" aria-label="Read: {{ $article['title'] }}">
-        <div class="article-card-visual article-card-visual--{{ $categorySlug }}@if($cover) article-card-visual--photo@endif">
-            @if($cover)
+        <div class="{{ $visualClass }}">
+            @if ($cover)
                 <img
                     class="article-card-cover"
                     src="{{ $cover }}"

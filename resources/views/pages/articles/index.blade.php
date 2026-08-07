@@ -61,6 +61,10 @@
     $featuredCategory = $featured['category'] ?? 'Guides';
     $featuredCategorySlug = \Illuminate\Support\Str::slug($featuredCategory);
     $featuredCover = !empty($featured['image']) ? asset($featured['image']) : null;
+    $featuredVisualClass = 'article-featured-visual article-card-visual article-card-visual--' . $featuredCategorySlug;
+    if ($featuredCover) {
+        $featuredVisualClass .= ' article-card-visual--photo';
+    }
 @endphp
 
 <section class="legal-hero articles-hero">
@@ -75,8 +79,8 @@
         @if ($featured)
         <article class="article-featured">
             <a href="{{ route('articles.show', $featured['slug']) }}" class="article-featured-link">
-                <div class="article-featured-visual article-card-visual article-card-visual--{{ $featuredCategorySlug }}@if($featuredCover) article-card-visual--photo@endif">
-                    @if($featuredCover)
+                <div class="{{ $featuredVisualClass }}">
+                    @if ($featuredCover)
                         <img
                             class="article-card-cover"
                             src="{{ $featuredCover }}"
