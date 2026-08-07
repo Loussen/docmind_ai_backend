@@ -12,6 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        // Hosting serves via public/; /public/... would otherwise stick in the browser URL.
+        $middleware->prepend(\App\Http\Middleware\StripPublicUrlPrefix::class);
+
         $middleware->alias([
             'device.auth' => \App\Http\Middleware\DeviceAuth::class,
         ]);
