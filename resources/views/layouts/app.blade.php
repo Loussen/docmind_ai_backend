@@ -15,7 +15,7 @@
     <!-- Open Graph -->
     <meta property="og:title" content="@yield('title', 'DoCMind AI - AI-Powered Document and Image Summarization')">
     <meta property="og:description" content="@yield('description', 'Transform your documents and images into intelligent summaries with AI-powered analysis.')">
-    <meta property="og:image" content="{{ asset('assets/images/og-image.png') }}">
+    <meta property="og:image" content="@yield('og_image', asset('assets/images/og-image.png'))">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:type" content="@yield('og_type', 'website')">
@@ -32,7 +32,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="@yield('title', 'DoCMind AI')">
     <meta name="twitter:description" content="@yield('description', 'AI-Powered Document Summarization')">
-    <meta name="twitter:image" content="{{ asset('assets/images/og-image.png') }}">
+    <meta name="twitter:image" content="@yield('og_image', asset('assets/images/og-image.png'))">
     
     <!-- Apple Smart App Banner -->
     <meta name="apple-itunes-app" content="app-id=6757693350">
@@ -49,7 +49,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Styles -->
-    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}?v=20260611b">
+    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}?v=20260808a">
     
     <!-- JSON-LD Structured Data -->
     @yield('structured_data')

@@ -11,6 +11,7 @@ return [
 
     [
         'slug' => 'docmind-vs-documind',
+        'image' => 'assets/images/articles/docmind-vs-documind.jpg',
         'category' => 'Comparisons',
         'title' => 'DocMind vs DocuMind: Same Name Energy, Different Apps',
         'excerpt' => 'People search “DocuMind” and find DocMind (and the other way around). Here is what each product actually does so you download the right one.',
@@ -94,6 +95,7 @@ HTML,
 
     [
         'slug' => 'best-chatpdf-alternatives-2026',
+        'image' => 'assets/images/articles/chatpdf-alternatives.jpg',
         'category' => 'Comparisons',
         'title' => 'Best ChatPDF Alternatives in 2026 (If You Hate Tab Overload)',
         'excerpt' => 'ChatPDF popularised “ask your PDF.” Here are solid alternatives — including options that work better on iPhone without a browser session open all day.',
@@ -160,6 +162,7 @@ HTML,
 
     [
         'slug' => 'best-pdf-summarizer-apps-for-iphone-2026',
+        'image' => 'assets/images/articles/pdf-summarizer-iphone.jpg',
         'category' => 'Apps',
         'title' => 'Best PDF Summarizer Apps for iPhone in 2026',
         'excerpt' => 'Not every “AI PDF” product feels native on iOS. Here is a usable shortlist of apps and approaches that actually work with phone-sized screens.',
@@ -215,6 +218,7 @@ HTML,
 
     [
         'slug' => 'chatgpt-for-pdf-vs-dedicated-summarizer-apps',
+        'image' => 'assets/images/articles/chatgpt-vs-dedicated.jpg',
         'category' => 'Comparisons',
         'title' => 'ChatGPT for PDFs vs Dedicated Summarizer Apps',
         'excerpt' => 'ChatGPT can open a PDF. That does not mean it is the best way to process ten of them every week. Here is a practical split.',
@@ -288,6 +292,7 @@ HTML,
 
     [
         'slug' => 'quillbot-summarizer-vs-document-apps',
+        'image' => 'assets/images/articles/quillbot-vs-document.jpg',
         'category' => 'Comparisons',
         'title' => 'QuillBot Summarizer vs Full Document AI Apps',
         'excerpt' => 'QuillBot is famous for paraphrasing. Its summarizer is fine for short pasted text — and a dead end for a multi-page PDF still living in Files.',
@@ -334,6 +339,7 @@ HTML,
 
     [
         'slug' => 'humata-ai-alternative-on-iphone',
+        'image' => 'assets/images/articles/humata-alternative.jpg',
         'category' => 'Comparisons',
         'title' => 'Looking for a Humata AI Alternative That Works on iPhone?',
         'excerpt' => 'Humata-type tools are strong for web document Q&A. If you need the same outcome — “what does this file say?” — on mobile without the heavy library UI, try this path.',
@@ -375,6 +381,7 @@ HTML,
 
     [
         'slug' => 'best-ai-document-summarizer-apps-for-students',
+        'image' => 'assets/images/articles/students-summarizer.jpg',
         'category' => 'Students',
         'title' => 'Best AI Document Summarizer Apps for Students (2026)',
         'excerpt' => 'Actual tools students use for readings, papers, and lecture photos — ChatPDF-style web tools, ChatGPT, QuillBot, and what works when you only have an iPhone.',
@@ -430,6 +437,7 @@ HTML,
 
     [
         'slug' => 'how-to-summarize-pdf-documents-with-ai-on-iphone',
+        'image' => 'assets/images/articles/summarize-pdf-iphone.jpg',
         'category' => 'Guides',
         'title' => 'How to Summarize a PDF on iPhone Without Losing Half a Day',
         'excerpt' => 'A practical phone workflow: pick the file, choose a tool that fits (chat vs structure), read the summary like a map, then spot-check the original.',
@@ -474,6 +482,7 @@ HTML,
 
     [
         'slug' => 'ocr-vs-ai-summarization-turn-scanned-documents-into-insights',
+        'image' => 'assets/images/articles/ocr-vs-summarization.jpg',
         'category' => 'OCR & AI',
         'title' => 'OCR Alone Will Not Save You — Pair It With a Summary',
         'excerpt' => 'OCR unlocks text from photos. Then you still face 3,000 words. Here is how the two steps differ and why stacking them on mobile matters.',
@@ -511,6 +520,7 @@ HTML,
 
     [
         'slug' => 'read-long-reports-faster-with-ai-document-summaries',
+        'image' => 'assets/images/articles/long-reports.jpg',
         'category' => 'Productivity',
         'title' => 'How People Actually Use AI to Get Through Long Reports',
         'excerpt' => 'Not a miracle “read without reading.” A triage habit: summary first, depth only where risk or decisions live.',
@@ -555,6 +565,7 @@ HTML,
 
     [
         'slug' => 'ai-summarization-for-legal-document-review',
+        'image' => 'assets/images/articles/legal-review.jpg',
         'category' => 'Legal',
         'title' => 'AI for Legal Document Review: Useful First Pass, Terrible Final Word',
         'excerpt' => 'How lawyers and ops teams use summarizers to queue work — and where using AI as a substitute for counsel goes wrong.',
@@ -593,6 +604,7 @@ HTML,
 
     [
         'slug' => 'ai-summarization-for-academic-research-papers',
+        'image' => 'assets/images/articles/academic-research.jpg',
         'category' => 'Research',
         'title' => 'Using AI on Research Papers Without Trashing Your Review Quality',
         'excerpt' => 'Literature review volume is brutal. AI speeds screening — if you treat it as sorting, not as your methods section.',
@@ -631,6 +643,7 @@ HTML,
 
     [
         'slug' => 'integrate-ai-summaries-into-daily-workflow',
+        'image' => 'assets/images/articles/daily-workflow.jpg',
         'category' => 'Productivity',
         'title' => 'Make AI Summaries a Daily Habit (Without Turning Every File into a Ritual)',
         'excerpt' => 'Small triggers beat ambitious systems. Here’s a day-shaped pattern that does not require a productivity religion.',

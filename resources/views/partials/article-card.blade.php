@@ -1,15 +1,29 @@
 @php
     $category = $article['category'] ?? 'Guides';
     $categorySlug = \Illuminate\Support\Str::slug($category);
+    $cover = !empty($article['image']) ? asset($article['image']) : null;
 @endphp
 
 <article class="article-card">
     <a href="{{ route('articles.show', $article['slug']) }}" class="article-card-link" aria-label="Read: {{ $article['title'] }}">
-        <div class="article-card-visual article-card-visual--{{ $categorySlug }}">
+        <div class="article-card-visual article-card-visual--{{ $categorySlug }}@if($cover) article-card-visual--photo@endif">
+            @if($cover)
+                <img
+                    class="article-card-cover"
+                    src="{{ $cover }}"
+                    alt=""
+                    width="700"
+                    height="400"
+                    loading="lazy"
+                    decoding="async"
+                >
+                <div class="article-card-cover-shade" aria-hidden="true"></div>
+            @else
+                <div class="article-card-icon" aria-hidden="true">
+                    @include('partials.article-icon', ['category' => $categorySlug])
+                </div>
+            @endif
             <span class="article-tag">{{ $category }}</span>
-            <div class="article-card-icon" aria-hidden="true">
-                @include('partials.article-icon', ['category' => $categorySlug])
-            </div>
         </div>
         <div class="article-card-body">
             <div class="article-card-meta">

@@ -1,15 +1,22 @@
 @extends('layouts.app')
 
+@php
+    $coverUrl = !empty($article['image'])
+        ? asset($article['image'])
+        : asset('assets/images/og-image.png');
+@endphp
+
 @section('title', $article['title'] . ' | DoCMind AI')
 @section('description', $article['meta_description'])
 @section('keywords', $article['keywords'])
 @section('og_type', 'article')
+@section('og_image', $coverUrl)
 
 @push('head')
 <meta property="article:published_time" content="{{ $article['published_at'] }}T00:00:00+00:00">
 <meta property="article:modified_time" content="{{ ($article['updated_at'] ?? $article['published_at']) }}T00:00:00+00:00">
 <meta property="article:author" content="DoCMind AI">
-<meta property="article:section" content="Document Summarization">
+<meta property="article:section" content="{{ $article['category'] ?? 'Document Summarization' }}">
 @endpush
 
 @section('structured_data')
@@ -35,7 +42,7 @@
             "url": "{{ asset('assets/images/app-icon.png') }}"
         }
     },
-    "image": "{{ asset('assets/images/og-image.png') }}",
+    "image": {!! json_encode([$coverUrl]) !!},
     "mainEntityOfPage": {
         "@type": "WebPage",
         "@id": "{{ url('/articles/' . $article['slug']) }}"
@@ -94,6 +101,20 @@
 
     <section class="legal-content article-body" itemprop="articleBody">
         <div class="container">
+            @if(!empty($article['image']))
+            <figure class="article-cover">
+                <img
+                    src="{{ $coverUrl }}"
+                    alt="{{ $article['title'] }}"
+                    width="1200"
+                    height="675"
+                    loading="eager"
+                    decoding="async"
+                    itemprop="image"
+                >
+            </figure>
+            @endif
+
             {!! $article['body'] !!}
 
             <div class="article-cta-box">

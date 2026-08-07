@@ -60,6 +60,7 @@
     $rest = $articles->skip(1);
     $featuredCategory = $featured['category'] ?? 'Guides';
     $featuredCategorySlug = \Illuminate\Support\Str::slug($featuredCategory);
+    $featuredCover = !empty($featured['image']) ? asset($featured['image']) : null;
 @endphp
 
 <section class="legal-hero articles-hero">
@@ -74,11 +75,24 @@
         @if ($featured)
         <article class="article-featured">
             <a href="{{ route('articles.show', $featured['slug']) }}" class="article-featured-link">
-                <div class="article-featured-visual article-card-visual--{{ $featuredCategorySlug }}">
+                <div class="article-featured-visual article-card-visual article-card-visual--{{ $featuredCategorySlug }}@if($featuredCover) article-card-visual--photo@endif">
+                    @if($featuredCover)
+                        <img
+                            class="article-card-cover"
+                            src="{{ $featuredCover }}"
+                            alt=""
+                            width="900"
+                            height="560"
+                            loading="eager"
+                            decoding="async"
+                        >
+                        <div class="article-card-cover-shade" aria-hidden="true"></div>
+                    @else
+                        <div class="article-card-icon article-card-icon--large" aria-hidden="true">
+                            @include('partials.article-icon', ['category' => $featuredCategorySlug])
+                        </div>
+                    @endif
                     <span class="article-tag article-tag--light">{{ $featuredCategory }}</span>
-                    <div class="article-card-icon article-card-icon--large" aria-hidden="true">
-                        @include('partials.article-icon', ['category' => $featuredCategorySlug])
-                    </div>
                 </div>
                 <div class="article-featured-body">
                     <span class="article-label-featured">Featured</span>
