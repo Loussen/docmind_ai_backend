@@ -97,9 +97,9 @@
             {!! $article['body'] !!}
 
             <div class="article-cta-box">
-                <h2>Ready to summarize your documents?</h2>
-                <p>Download DoCMind AI free on the App Store — upload PDFs, Word docs, and images for instant AI summaries.</p>
-                <a href="https://apps.apple.com/app/id6757693350" class="btn btn-primary" style="color: #fff;" target="_blank" rel="noopener">Get DoCMind AI Free</a>
+                <h2>Try it on an actual file</h2>
+                <p>If you use an iPhone and most documents hit your Mail or Files app first, DoCMind AI is the mobile path — PDF, Word, or a photo of a page. Free to start; no account required.</p>
+                <a href="https://apps.apple.com/app/id6757693350" class="btn btn-primary" style="color: #fff;" target="_blank" rel="noopener">Open DoCMind AI on the App Store</a>
             </div>
         </div>
     </section>
